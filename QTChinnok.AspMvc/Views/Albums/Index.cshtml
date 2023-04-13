@@ -12,6 +12,17 @@
     <a asp-action="Create">Create New</a>
 </p>
 
+<form asp-action="Filter" method="get">
+    <div class="input-group">
+        <div class="form-outline w-75">
+            <input type="search" id="text" name="text" value="@filterText" class="form-control" />
+        </div>
+        <button type="submit" class="btn btn-primary">
+            <i class="fas fa-search"></i>
+        </button>
+    </div>
+</form>
+
 <table class="table">
     <thead>
         <tr>

@@ -1,5 +1,5 @@
-﻿using System.Linq;
-using QTChinnok.Logic.Contracts;
+﻿#if GENERATEDCODE_ON
+using System.Linq;
 
 namespace QTChinnok.MvvMApp.ViewModels
 {
@@ -17,7 +17,7 @@ namespace QTChinnok.MvvMApp.ViewModels
                 OnPropertiesChanged();
             }
         }
-        public override IDataAccess<TEntity> CreateController()
+        public override Logic.Contracts.Base.IMediaTypesAccess CreateController()
         {
             return new Logic.Controllers.Base.MediaTypesController();
         }
@@ -27,3 +27,4 @@ namespace QTChinnok.MvvMApp.ViewModels
         }
     }
 }
+#endif

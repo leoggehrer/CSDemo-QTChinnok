@@ -66,7 +66,6 @@ namespace TemplateTooles.ConApp
             ,".md"
             ,".template"
             ,".xaml"
-            ,".axaml"
         };
         private static string[] ReplaceFiles { get; } = new string[]
         {
@@ -97,10 +96,7 @@ namespace TemplateTooles.ConApp
             ,".template"
             ,".jpg"
             ,".png"
-            ,".ico"
             ,".xaml"
-            ,".axaml"
-            ,".manifest"
         };
         private static string[] SolutionExtenions { get; } = new string[]
         {
@@ -368,7 +364,7 @@ namespace TemplateTooles.ConApp
             }
             if (string.IsNullOrEmpty(projectFilePath) == false)
             {
-                ReplaceProjectGuids(projectFilePath);
+                ProjectGuids.AddRange(ReplaceProjectGuids(projectFilePath));
             }
         }
         private void CopyProjectDirectoryWorkFiles(string sourceDirectory, string sourceSolutionDirectory, string targetSolutionDirectory)
@@ -391,16 +387,10 @@ namespace TemplateTooles.ConApp
         {
             var fileName = Path.GetFileName(sourceFilePath);
             var extension = Path.GetExtension(sourceFilePath);
-            var targetDirectory = Path.GetDirectoryName(targetFilePath);
 
             if (Extensions.SingleOrDefault(i => i.Equals(extension, StringComparison.CurrentCultureIgnoreCase)) == null)
             {
                 Extensions.Add(extension);
-            }
-
-            if (targetDirectory != null && Directory.Exists(targetDirectory) == false)
-            {
-                Directory.CreateDirectory(targetDirectory);
             }
 
             if (sourceFilePath.EndsWith(DockerfileName, StringComparison.CurrentCultureIgnoreCase))
@@ -408,7 +398,7 @@ namespace TemplateTooles.ConApp
                 var sourceLines = File.ReadAllLines(sourceFilePath, Encoding.Default);
                 var targetLines = sourceLines.Select(l => l.Replace(sourceSolutionName, targetSolutionName));
 
-                File.WriteAllLines(targetFilePath, targetLines.ToArray(), Encoding.Default);
+                WriteAllLines(targetFilePath, targetLines.ToArray(), Encoding.Default);
             }
             else if (sourceFilePath.EndsWith(DockerComposefileName, StringComparison.CurrentCultureIgnoreCase))
             {
@@ -416,7 +406,7 @@ namespace TemplateTooles.ConApp
                 var targetLines = sourceLines.Select(l => l.Replace(sourceSolutionName, targetSolutionName))
                                              .Select(l => l.Replace(sourceSolutionName.ToLower(), targetSolutionName.ToLower()));
 
-                File.WriteAllLines(targetFilePath, targetLines.ToArray(), Encoding.Default);
+                WriteAllLines(targetFilePath, targetLines.ToArray(), Encoding.Default);
             }
             else if (ReplaceFiles.Any(f => f.Equals(fileName, StringComparison.CurrentCultureIgnoreCase))
                      || ReplaceExtensions.Any(i => i.Equals(extension, StringComparison.CurrentCultureIgnoreCase)))
@@ -440,8 +430,7 @@ namespace TemplateTooles.ConApp
                 }
 
                 if (sourceLines.Any()
-                    && sourceLines.First().Contains(StaticLiterals.IgnoreLabel) == false
-                    && sourceLines.First().Contains(StaticLiterals.GeneratedCodeLabel) == false)
+                    && sourceLines.First().Contains(StaticLiterals.IgnoreLabel) == false)
                 {
                     foreach (var sourceLine in sourceLines)
                     {
@@ -450,33 +439,18 @@ namespace TemplateTooles.ConApp
                         targetLine = targetLine.Replace(StaticLiterals.BaseCodeLabel, StaticLiterals.CodeCopyLabel);
                         targetLines.Add(targetLine);
                     }
-                    File.WriteAllLines(targetFilePath, targetLines.ToArray(), Encoding.UTF8);
+                    WriteAllLines(targetFilePath, targetLines.ToArray(), Encoding.UTF8);
                 }
             }
             else if (File.Exists(targetFilePath) == false)
             {
-                File.Copy(sourceFilePath, targetFilePath);
+                CopyFile(sourceFilePath, targetFilePath);
             }
         }
 
-        private static string CreateTargetFilePath(string sourceFilePath, string sourceSolutionDirectory, string targetSolutionDirectory)
+        private static string[] ReplaceProjectGuids(string filePath)
         {
-            var result = targetSolutionDirectory;
-            var sourceSolutionFolder = new DirectoryInfo(sourceSolutionDirectory).Name;
-            var targetSolutionFolder = new DirectoryInfo(targetSolutionDirectory).Name;
-            var subSourceFilePath = sourceFilePath.Replace(sourceSolutionDirectory, string.Empty);
-
-            foreach (var item in subSourceFilePath.Split(Path.DirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries))
-            {
-                if (string.IsNullOrEmpty(item) == false)
-                {
-                    result = Path.Combine(result, item.Replace(sourceSolutionFolder, targetSolutionFolder));
-                }
-            }
-            return result;
-        }
-        private void ReplaceProjectGuids(string filePath)
-        {
+            var result = new List<string>();
             var xml = new XmlDocument();
 
             xml.Load(filePath);
@@ -492,14 +466,58 @@ namespace TemplateTooles.ConApp
                         {
                             string newGuid = Guid.NewGuid().ToString().ToUpper();
 
-                            ProjectGuids.Add($"{item.InnerText}{Separator}{newGuid}");
-
+                            result.Add($"{item.InnerText}{Separator}{newGuid}");
                             item.InnerText = "{" + newGuid + "}";
                         }
                     }
                 }
             }
             xml.Save(filePath);
+            return result.ToArray();
+        }
+        private static string CreateTargetFilePath(string sourceFilePath, string sourceSolutionDirectory, string targetSolutionDirectory)
+        {
+            var result = targetSolutionDirectory;
+            var sourceSolutionFolder = new DirectoryInfo(sourceSolutionDirectory).Name;
+            var targetSolutionFolder = new DirectoryInfo(targetSolutionDirectory).Name;
+            var subSourceFilePath = sourceFilePath.Replace(sourceSolutionDirectory, string.Empty);
+            
+            foreach (var item in subSourceFilePath.Split(Path.DirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries))
+            {
+                if (string.IsNullOrEmpty(item) == false)
+                {
+                    result = Path.Combine(result, item.Replace(sourceSolutionFolder, targetSolutionFolder));
+                }
+            }
+            return result;
+        }
+
+        private static void EnsureExistsDirectory(string path)
+        {
+            if (path != null && Directory.Exists(path) == false)
+            {
+                Directory.CreateDirectory(path);
+            }
+        }
+        private static void CopyFile(string sourceFilePath, string targetFilePath)
+        {
+            var directory = Path.GetDirectoryName(targetFilePath);
+
+            if (directory != null)
+            {
+                EnsureExistsDirectory(directory);
+            }
+            File.Copy(sourceFilePath, targetFilePath);
+        }
+        private static void WriteAllLines(string filePath, IEnumerable<string> lines, Encoding encoding)
+        {
+            var directory = Path.GetDirectoryName(filePath);
+
+            if (directory != null)
+            {
+                EnsureExistsDirectory(directory);
+            }
+            File.WriteAllLines(filePath, lines.ToArray(), encoding);
         }
     }
 }

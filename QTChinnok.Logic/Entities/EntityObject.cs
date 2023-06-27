@@ -2,8 +2,9 @@
 //MdStart
 namespace QTChinnok.Logic.Entities
 {
-    using Logic.Contracts;
     using System.Collections;
+    using CommonBase.Contracts;
+
     public abstract partial class EntityObject : IIdentifyable
     {
         /// <summary>

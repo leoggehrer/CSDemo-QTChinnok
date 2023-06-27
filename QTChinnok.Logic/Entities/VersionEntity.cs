@@ -1,8 +1,9 @@
 ﻿//@CodeCopy
 //MdStart
+using CommonBase.Contracts;
+
 namespace QTChinnok.Logic.Entities
 {
-    using Logic.Contracts;
     public abstract partial class VersionEntity : EntityObject, IVersionable
     {
 #if ROWVERSION_ON

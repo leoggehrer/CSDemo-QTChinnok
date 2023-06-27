@@ -1,4 +1,4 @@
-﻿using QTChinnok.Logic.Contracts;
+﻿#if GENERATEDCODE_ON
 using System.Linq;
 
 namespace QTChinnok.MvvMApp.ViewModels
@@ -13,7 +13,7 @@ namespace QTChinnok.MvvMApp.ViewModels
             set => Model.Name = value; 
         }
 
-        public override IDataAccess<TEntity> CreateController()
+        public override Logic.Contracts.Base.IArtistsAccess CreateController()
         {
             return new Logic.Controllers.Base.ArtistsController();
         }
@@ -24,3 +24,4 @@ namespace QTChinnok.MvvMApp.ViewModels
         }
     }
 }
+#endif

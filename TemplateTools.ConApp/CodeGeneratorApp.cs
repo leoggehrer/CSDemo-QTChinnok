@@ -16,7 +16,7 @@ namespace TemplateTools.ConApp
         {
             ClassConstructing();
             ToGroupFile = false;
-            SolutionPath = Program.GetCurrentSolutionPath();
+            SolutionPath = Program.SourcePath;
             ClassConstructed();
         }
         static partial void ClassConstructing();

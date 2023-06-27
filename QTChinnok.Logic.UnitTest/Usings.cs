@@ -11,5 +11,6 @@
 #endif
 global using CommonBase;
 global using CommonBase.Extensions;
+global using BaseContracts = CommonBase.Contracts;
 global using Microsoft.VisualStudio.TestTools.UnitTesting;
 //MdEnd

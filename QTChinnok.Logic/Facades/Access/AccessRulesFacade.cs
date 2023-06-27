@@ -4,7 +4,8 @@
 namespace QTChinnok.Logic.Facades.Access
 {
     using TOutModel = Models.Access.AccessRule;
-    public partial class AccessRulesFacade : ControllerFacade<TOutModel>, Contracts.Access.IAccessRulesAccess<TOutModel>
+
+    public partial class AccessRulesFacade : ControllerFacade<TOutModel>, Contracts.Access.IAccessRulesAccess
     {
         public AccessRulesFacade() 
             : base(new Controllers.Access.AccessRulesController())

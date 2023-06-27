@@ -1,6 +1,5 @@
 ﻿//@CodeCopy
 //MdStart
-
 using System.Reflection;
 
 namespace CommonBase.Extensions

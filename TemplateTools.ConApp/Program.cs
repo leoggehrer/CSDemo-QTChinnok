@@ -6,6 +6,7 @@ namespace TemplateTools.ConApp
 {
     partial class Program
     {
+        #region Class-Constructors
         static Program()
         {
             ClassConstructing();
@@ -20,6 +21,7 @@ namespace TemplateTools.ConApp
         }
         static partial void ClassConstructing();
         static partial void ClassConstructed();
+        #endregion Class-Constructors
 
         #region Properties
         internal static string? HomePath { get; set; }
@@ -31,7 +33,7 @@ namespace TemplateTools.ConApp
         internal static ConsoleColor ForegroundColor { get; set; } = Console.ForegroundColor;
         #endregion Properties
 
-        static void Main(string[] args)
+        static void Main(/*string[] args*/)
         {
             RunApp();
         }
@@ -292,6 +294,7 @@ namespace TemplateTools.ConApp
             }
             return result.ToArray();
         }
+
         #region CLI Argument methods
         internal static void OpenSolutionFolder(string solutionPath)
         {

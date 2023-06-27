@@ -78,14 +78,14 @@ namespace TemplateCodeGenerator.Logic.Generation
 
                                                                       && t.Name.Equals(StaticLiterals.EntityObjectName) == false
                                                                       && t.Name.Equals(StaticLiterals.VersionEntityName) == false);
-        public IEnumerable<Type> ServiceTypes => AssemblyTypes.Where(t => t.IsClass
+        public IEnumerable<Type> ServiceTypes => AssemblyTypes.Where((Func<Type, bool>)(t => t.IsClass
                                                                        && t.IsAbstract == false
                                                                        && t.IsNested == false
                                                                        && t.Namespace != null
                                                                        && t.Namespace!.Contains($".{StaticLiterals.ServiceModelsFolder}")
 
-                                                                       && t.Name.Equals(StaticLiterals.IdentityServiceName) == false
-                                                                       && t.Name.Equals(StaticLiterals.VersionServiceName) == false);
+                                                                       && t.Name.Equals(StaticLiterals.ServiceModelName) == false
+                                                                       && t.Name.Equals((string)StaticLiterals.VersionModelName) == false));
         public static bool IsAccountEntity(Type type)
         {
             var result = type.FullName!.EndsWith($".{StaticLiterals.Account}.Identity")

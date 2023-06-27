@@ -4,6 +4,7 @@
 namespace QTChinnok.Logic.Facades.Account
 {
     using TOutModel = Models.Account.Role;
+
     public sealed partial class RolesFacade : ControllerFacade<TOutModel>, Contracts.Account.IRolesAccess<TOutModel>
     {
         public RolesFacade()

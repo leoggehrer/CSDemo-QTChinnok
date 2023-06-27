@@ -1,9 +1,9 @@
 ﻿//@CodeCopy
 //MdStart
-using QTChinnok.Logic.Contracts;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CommonBase.Contracts;
 
 namespace QTChinnok.Logic.UnitTest
 {

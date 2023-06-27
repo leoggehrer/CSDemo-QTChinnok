@@ -2,8 +2,7 @@
 //MdStart
 namespace QTChinnok.Logic.Models
 {
-    using QTChinnok.Logic.Contracts;
-    public abstract partial class VersionExtendedModel : VersionModel, IVersionableExtendedProperties
+    public abstract partial class VersionExtendedModel : VersionModel, BaseContracts.IVersionableExtendedProperties
     {
         new internal virtual Entities.VersionExtendedEntity Source
         {
@@ -66,7 +65,7 @@ namespace QTChinnok.Logic.Models
             }
         }
 #endif
-        protected void CopyExendedProperties(IVersionableExtendedProperties source)
+        protected static void CopyExendedProperties(BaseContracts.IVersionableExtendedProperties source)
         {
 #if CREATED_ON
             CreatedOn = source.CreatedOn;

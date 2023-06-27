@@ -1,7 +1,7 @@
 ﻿//@CodeCopy
 //MdStart
+using CommonBase.Contracts;
 using Microsoft.AspNetCore.Mvc;
-using QTChinnok.Logic.Contracts;
 
 namespace QTChinnok.WebApi.Controllers
 {

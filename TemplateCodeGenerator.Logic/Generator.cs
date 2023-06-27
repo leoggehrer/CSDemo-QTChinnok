@@ -83,6 +83,22 @@ namespace TemplateCodeGenerator.Logic
             }
             #endregion MVVMApp
 
+            #region ClientBlazorApp
+            if (configuration.QuerySettingValue<bool>(Common.UnitType.ClientBlazor.ToString(), "All", "All", "Generate", "True"))
+            {
+                var generator = new Generation.ClientBlazorGenerator(solutionProperties);
+
+                tasks.Add(Task.Factory.StartNew(() =>
+                {
+                    var generatedItems = new List<IGeneratedItem>();
+
+                    Console.WriteLine("Create Client-Blazor-Components...");
+                    generatedItems.AddRange(generator.GenerateAll());
+                    result.AddRangeSafe(generatedItems);
+                }));
+            }
+            #endregion ClientBlazorApp
+
             #region AngularApp
             if (configuration.QuerySettingValue<bool>(Common.UnitType.Angular.ToString(), "All", "All", "Generate", "True"))
             {
@@ -124,6 +140,7 @@ namespace TemplateCodeGenerator.Logic
 
             Preprocessor.ProjectFile.SwitchDefine(defines, Preprocessor.ProjectFile.GeneratedCodePrefix, Preprocessor.ProjectFile.OffPostfix);
             Preprocessor.ProjectFile.WriteDefinesInProjectFiles(path, defines);
+            Preprocessor.RazorFile.SetPreprocessorDefineCommentsInRazorFiles(path, defines);
         }
         private static IEnumerable<string> GetGeneratedFiles(string path, string searchPattern, string[] labels)
         {

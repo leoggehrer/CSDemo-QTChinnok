@@ -38,7 +38,7 @@ namespace QTChinnok.MvvMApp.ViewModels
             {
             }
 
-            public override IDataAccess<TGenreEntity> CreateController()
+            public override Logic.Contracts.Base.IGenresAccess CreateController()
             {
                 return new Logic.Controllers.Base.GenresController();
             }
@@ -54,7 +54,7 @@ namespace QTChinnok.MvvMApp.ViewModels
             {
             }
 
-            public override IDataAccess<TMediaTypeEntity> CreateController()
+            public override Logic.Contracts.Base.IMediaTypesAccess CreateController()
             {
                 return new Logic.Controllers.Base.MediaTypesController();
             }
@@ -70,7 +70,7 @@ namespace QTChinnok.MvvMApp.ViewModels
             {
             }
 
-            public override IDataAccess<TArtistEntity> CreateController()
+            public override Logic.Contracts.Base.IArtistsAccess CreateController()
             {
                 return new Logic.Controllers.Base.ArtistsController();
             }
@@ -85,7 +85,7 @@ namespace QTChinnok.MvvMApp.ViewModels
             {
             }
 
-            public override IDataAccess<TAlbumEntity> CreateController()
+            public override Logic.Contracts.App.IAlbumsAccess CreateController()
             {
                 return new Logic.Controllers.App.AlbumsController();
             }
@@ -100,7 +100,7 @@ namespace QTChinnok.MvvMApp.ViewModels
             {
             }
 
-            public override IDataAccess<TTrackEntity> CreateController()
+            public override Logic.Contracts.App.ITracksAccess CreateController()
             {
                 return new Logic.Controllers.App.TracksController();
             }

@@ -1,7 +1,6 @@
 ﻿//@CodeCopy
 //MdStart
-
-using QTChinnok.Logic.Contracts;
+using CommonBase.Contracts;
 using QTChinnok.Logic.Controllers;
 
 namespace QTChinnok.Logic.Facades

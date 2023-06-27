@@ -39,7 +39,7 @@ namespace TemplateCodeGenerator.Logic
                 var projectPath = Path.Combine(solutionPath, solutionProperties.LogicProjectName);
                 if (Directory.Exists(projectPath))
                 {
-                    var writeItems = generatedItems.Where<IGeneratedItem>((Func<IGeneratedItem, bool>)(e => e.UnitType == UnitType.Logic && e.ItemType == ItemType.Model));
+                    var writeItems = generatedItems.Where<IGeneratedItem>((Func<IGeneratedItem, bool>)(e => e.UnitType == UnitType.Logic && e.ItemType == ItemType.AccessModel));
 
                     Console.WriteLine("Write Logic-Models...");
                     WriteItems(projectPath, writeItems, WriteToGroupFile);
@@ -119,7 +119,7 @@ namespace TemplateCodeGenerator.Logic
                 var projectPath = Path.Combine(solutionPath, solutionProperties.WebApiProjectName);
                 if (Directory.Exists(projectPath))
                 {
-                    var writeItems = generatedItems.Where(e => e.UnitType == UnitType.WebApi && (e.ItemType == ItemType.Model || e.ItemType == ItemType.EditModel));
+                    var writeItems = generatedItems.Where(e => e.UnitType == UnitType.WebApi && (e.ItemType == ItemType.AccessModel || e.ItemType == ItemType.EditModel));
 
                     Console.WriteLine("Write WebApi-Models...");
                     WriteItems(projectPath, writeItems, WriteToGroupFile);
@@ -155,7 +155,7 @@ namespace TemplateCodeGenerator.Logic
                 var projectPath = Path.Combine(solutionPath, solutionProperties.AspMvcAppProjectName);
                 if (Directory.Exists(projectPath))
                 {
-                    var writeItems = generatedItems.Where(e => e.UnitType == UnitType.AspMvc && (e.ItemType == ItemType.Model || e.ItemType == ItemType.FilterModel));
+                    var writeItems = generatedItems.Where(e => e.UnitType == UnitType.AspMvc && (e.ItemType == ItemType.AccessModel || e.ItemType == ItemType.FilterModel));
 
                     Console.WriteLine("Write AspMvc-Models...");
                     WriteItems(projectPath, writeItems, WriteToGroupFile);
@@ -202,13 +202,82 @@ namespace TemplateCodeGenerator.Logic
                 var projectPath = Path.Combine(solutionPath, solutionProperties.MVVMAppProjectName);
                 if (Directory.Exists(projectPath))
                 {
-                    var writeItems = generatedItems.Where(e => e.UnitType == UnitType.MVVM && e.ItemType == ItemType.Model);
+                    var writeItems = generatedItems.Where(e => e.UnitType == UnitType.MVVM && e.ItemType == ItemType.AccessModel);
 
                     Console.WriteLine("Write MVVM-Models...");
                     WriteItems(projectPath, writeItems, false);
                 }
             }));
             #endregion WriteMVVMComponents
+
+            #region WriteClientBlazorComponents
+            tasks.Add(Task.Factory.StartNew(() =>
+            {
+                var projectPath = Path.Combine(solutionPath, solutionProperties.ClientBlazorProjectName);
+                if (Directory.Exists(projectPath))
+                {
+                    var writeItems = generatedItems.Where(e => e.UnitType == UnitType.ClientBlazor && e.ItemType == ItemType.AccessModel);
+
+                    Console.WriteLine("Write Client-Blazor-Models...");
+                    WriteItems(projectPath, writeItems, false);
+                }
+            }));
+            tasks.Add(Task.Factory.StartNew(() =>
+            {
+                var projectPath = Path.Combine(solutionPath, solutionProperties.ClientBlazorProjectName);
+                if (Directory.Exists(projectPath))
+                {
+                    var writeItems = generatedItems.Where(e => e.UnitType == UnitType.ClientBlazor && e.ItemType == ItemType.ServiceModel);
+
+                    Console.WriteLine("Write Client-Blazor-ServiceModels...");
+                    WriteItems(projectPath, writeItems, false);
+                }
+            }));
+            tasks.Add(Task.Factory.StartNew(() =>
+            {
+                var projectPath = Path.Combine(solutionPath, solutionProperties.ClientBlazorProjectName);
+                if (Directory.Exists(projectPath))
+                {
+                    var writeItems = generatedItems.Where(e => e.UnitType == UnitType.ClientBlazor && e.ItemType == ItemType.ServiceContract);
+
+                    Console.WriteLine("Write Client-Blazor-ServiceContracts...");
+                    WriteItems(projectPath, writeItems, false);
+                }
+            }));
+            tasks.Add(Task.Factory.StartNew(() =>
+            {
+                var projectPath = Path.Combine(solutionPath, solutionProperties.ClientBlazorProjectName);
+                if (Directory.Exists(projectPath))
+                {
+                    var writeItems = generatedItems.Where(e => e.UnitType == UnitType.ClientBlazor && e.ItemType == ItemType.ServiceAccessContract);
+
+                    Console.WriteLine("Write Client-Blazor-AccessContracts...");
+                    WriteItems(projectPath, writeItems, false);
+                }
+            }));
+            tasks.Add(Task.Factory.StartNew(() =>
+            {
+                var projectPath = Path.Combine(solutionPath, solutionProperties.ClientBlazorProjectName);
+                if (Directory.Exists(projectPath))
+                {
+                    var writeItems = generatedItems.Where(e => e.UnitType == UnitType.ClientBlazor && e.ItemType == ItemType.Service);
+
+                    Console.WriteLine("Write Client-Blazor-Services...");
+                    WriteItems(projectPath, writeItems, false);
+                }
+            }));
+            tasks.Add(Task.Factory.StartNew(() =>
+            {
+                var projectPath = Path.Combine(solutionPath, solutionProperties.ClientBlazorProjectName);
+                if (Directory.Exists(projectPath))
+                {
+                    var writeItems = generatedItems.Where(e => e.UnitType == UnitType.ClientBlazor && e.ItemType == ItemType.AddServices);
+
+                    Console.WriteLine("Write ClientBlazor-AddServices...");
+                    WriteItems(projectPath, writeItems, WriteToGroupFile);
+                }
+            }));
+            #endregion WriteClientBlazorComponents
 
             #region WriteAngularComponents
             tasks.Add(Task.Factory.StartNew(() =>
@@ -252,6 +321,7 @@ namespace TemplateCodeGenerator.Logic
 
             Preprocessor.ProjectFile.SwitchDefine(defines, Preprocessor.ProjectFile.GeneratedCodePrefix, Preprocessor.ProjectFile.OnPostfix);
             Preprocessor.ProjectFile.WriteDefinesInProjectFiles(solutionPath, defines);
+            Preprocessor.RazorFile.SetPreprocessorDefineCommentsInRazorFiles(solutionPath, defines);
         }
 
         #region Write methods
@@ -358,7 +428,7 @@ namespace TemplateCodeGenerator.Logic
                     canCreate = false;
                 }
             }
-            else if (string.IsNullOrEmpty(sourcePath) == false
+            else if (string.IsNullOrEmpty(sourcePath) == false 
                      && Directory.Exists(sourcePath) == false)
             {
                 Directory.CreateDirectory(sourcePath);

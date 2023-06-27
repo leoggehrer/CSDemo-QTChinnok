@@ -6,9 +6,10 @@ namespace QTChinnok.WpfApp.ViewModels
     using System.Threading.Tasks;
     using System.Windows;
     using System.Windows.Input;
+    using CommonBase.Contracts;
 
     public abstract partial class EntityViewModel<T> : BaseViewModel
-        where T : Logic.Contracts.IIdentifyable, new()
+        where T : IIdentifyable, new()
     {
         #region fields
         private ICommand? cmdSave = null;
@@ -55,7 +56,7 @@ namespace QTChinnok.WpfApp.ViewModels
         #endregion properties
 
         #region methods
-        public abstract Logic.Contracts.IDataAccess<T> CreateController();
+        public abstract IDataAccess<T> CreateController();
         protected virtual void OnPropertiesChanged()
         {
             OnPropertyChanged(nameof(Id));
@@ -89,7 +90,7 @@ namespace QTChinnok.WpfApp.ViewModels
                 {
                     var dbEntity = default(T);
 
-                    if (Entity.Id != default(IdType))
+                    if (Entity.Id != default)
                     {
                         dbEntity = await ctrl.GetByIdAsync(Entity.Id).ConfigureAwait(false);
 

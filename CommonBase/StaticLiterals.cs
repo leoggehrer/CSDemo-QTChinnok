@@ -23,7 +23,7 @@ namespace CommonBase
                 ".AspMvc",
                 ".AngularApp",
                 ".WpfApp",
-                ".MvvMApp",
+                ".ClientBlazorApp",
             };
             SolutionToolProjects = new[]
             {
@@ -50,6 +50,8 @@ namespace CommonBase
         public static string CodeCopyLabel => "@CodeCopy";
         public static string CSharpFileExtension => ".cs";
         public static string SourceFileExtensions => "*.css|*.cs|*.ts|*.cshtml|*.razor|*.razor.cs|*.template";
+
+        public static int MaxPageSize => 500;
     }
 }
 //MdEnd

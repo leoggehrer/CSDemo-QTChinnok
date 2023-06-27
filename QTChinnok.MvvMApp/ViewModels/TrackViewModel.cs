@@ -1,4 +1,5 @@
-﻿using QTChinnok.Logic.Contracts;
+﻿#if GENERATEDCODE_ON
+using QTChinnok.Logic.Contracts;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -119,7 +120,7 @@ namespace QTChinnok.MvvMApp.ViewModels
             base.OnPropertiesChanged(propertyNames.Union(new string[] { nameof(Id), nameof(GenreId), nameof(AlbumId), nameof(MediaTypeId), nameof(Name), nameof(Composer), nameof(Genres), nameof(Albums), nameof(MediaTypes) }).ToArray());
         }
 
-        public override IDataAccess<TTrackEntity> CreateController()
+        public override Logic.Contracts.App.ITracksAccess CreateController()
         {
             return new Logic.Controllers.App.TracksController();
         }
@@ -176,3 +177,4 @@ namespace QTChinnok.MvvMApp.ViewModels
         }
     }
 }
+#endif

@@ -125,7 +125,9 @@ namespace TemplateCodeGenerator.Logic.Generation
         }
         public IEnumerable<string> CreateDelegateFactoryMethods(string itemType, string delegateName, bool isPublic, bool newPrefix)
         {
+#pragma warning disable IDE0028 // Simplify collection initialization
             var result = new List<string>(CreateComment());
+#pragma warning restore IDE0028 // Simplify collection initialization
 
             result.Add($"public{(newPrefix ? " new " : " ")}static {itemType} Create()");
             result.Add("{");
@@ -470,7 +472,9 @@ namespace TemplateCodeGenerator.Logic.Generation
         }
         public virtual IEnumerable<string> CreateCopyProperties(string visibility, Type type, string copyType, Func<PropertyInfo, bool>? filter = null)
         {
+#pragma warning disable IDE0028 // Simplify collection initialization
             var result = new List<string>(CreateComment(type));
+#pragma warning restore IDE0028 // Simplify collection initialization
 
             result.Add($"{visibility} void CopyProperties({copyType} other)");
             result.Add("{");
@@ -505,7 +509,9 @@ namespace TemplateCodeGenerator.Logic.Generation
         }
         public virtual IEnumerable<string> CreateDelegateCopyProperties(string visibility, Type type, string copyType, Func<PropertyInfo, bool>? filter = null)
         {
+#pragma warning disable IDE0028 // Simplify collection initialization
             var result = new List<string>(CreateComment(type));
+#pragma warning restore IDE0028 // Simplify collection initialization
 
             result.Add($"{visibility} void CopyProperties({copyType} other)");
             result.Add("{");
@@ -533,11 +539,12 @@ namespace TemplateCodeGenerator.Logic.Generation
         #endregion CopyProperties
 
         /// <summary>
-        /// Diese Methode erstellt den Programmcode fuer das Vergleichen der Eigenschaften.
+        /// This method creates the source code for the Equals(...) method.
         /// </summary>
-        /// <param name="type">Die Schnittstellen-Typ Information.</param>
-        /// <returns>Die Equals-Methode als Text.</returns>
-        public virtual IEnumerable<string> OverrideEquals(Type type)
+        /// <param name="type">The type for the Equals(...) method.</param>
+        /// <param name="otherType">The other type as a string.</param>
+        /// <returns>The source code for the Equals method.</returns>
+        public virtual IEnumerable<string> CreateEquals(Type type, string otherType)
         {
             var result = new List<string>();
             var counter = 0;
@@ -550,7 +557,7 @@ namespace TemplateCodeGenerator.Logic.Generation
                 result.Add($"public override bool Equals(object? obj)");
                 result.Add("{");
                 result.Add("bool result = false;");
-                result.Add($"if (obj is {ItemProperties.CreateModelSubType(type)} other)");
+                result.Add($"if (obj is {otherType} other)");
                 result.Add("{");
 
                 foreach (var pi in filteredProperties)
@@ -583,10 +590,10 @@ namespace TemplateCodeGenerator.Logic.Generation
             return result;
         }
         /// <summary>
-        /// Diese Methode erstellt den Programmcode fuer die Berechnung des Hash-Codes.
+        /// This method creates the source code for the GetHashCode() method.
         /// </summary>
-        /// <param name="type">Die Schnittstellen-Typ Information.</param>
-        /// <returns>Die GetHashCode-Methode als Text.</returns>
+        /// <param name="type">The type for the GetHashCode() method.</param>
+        /// <returns>The source code for the GetHashCode() method.</returns>
         public virtual IEnumerable<string> CreateGetHashCode(Type type)
         {
             var result = new List<string>();

@@ -24,7 +24,7 @@ namespace QTChinnok.WebApi.Controllers.Account
         ///
         /// Implemented from template developer
         ///
-        public IdentitiesController(QTChinnok.Logic.Contracts.Account.IIdentitiesAccess<TAccessModel> other)
+        public IdentitiesController(QTChinnok.Logic.Contracts.Account.IIdentitiesAccess other)
         : base(other)
         {
             Constructing();

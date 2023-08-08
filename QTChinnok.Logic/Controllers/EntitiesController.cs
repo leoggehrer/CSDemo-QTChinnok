@@ -2,6 +2,8 @@
 //MdStart
 using System.Linq.Dynamic.Core;
 using System.Linq.Expressions;
+using CommonBase.Contracts;
+
 namespace QTChinnok.Logic.Controllers
 {
     /// <summary>
@@ -11,16 +13,16 @@ namespace QTChinnok.Logic.Controllers
 #if ACCOUNT_ON
     [Modules.Security.Authorize]
 #endif
-    public abstract partial class EntitiesController<TEntity, TOutModel> : ControllerObject, Contracts.IDataAccess<TOutModel>
+    public abstract partial class EntitiesController<TEntity, TOutModel> : ControllerObject, IDataAccess<TOutModel>
         where TEntity : Entities.EntityObject, new()
         where TOutModel : Models.ModelObject, new()
     {
         protected enum ActionType
         {
-            Insert,
-            Update,
-            Delete,
-            Save,
+            Insert = 1,
+            Update = 2 * Insert,
+            Delete = 2 * Update,
+            Save = 2 * Delete,
         }
         static EntitiesController()
         {
@@ -66,7 +68,7 @@ namespace QTChinnok.Logic.Controllers
         /// <summary>
         /// Creates an instance.
         /// </summary>
-        public EntitiesController()
+        protected EntitiesController()
             : base(new DataContext.ProjectDbContext())
         {
 
@@ -75,7 +77,7 @@ namespace QTChinnok.Logic.Controllers
         /// Creates an instance.
         /// </summary>
         /// <param name="other">A reference to an other controller</param>
-        public EntitiesController(ControllerObject other)
+        protected EntitiesController(ControllerObject other)
             : base(other)
         {
 
@@ -883,7 +885,7 @@ namespace QTChinnok.Logic.Controllers
             
             return ExecuteUpdate(entity);
 #else
-            return await Task.Run(() =>ExecuteUpdate(entity)).ConfigureAwait(false);
+            return await Task.Run(() => ExecuteUpdate(entity)).ConfigureAwait(false);
 #endif
         }
         /// <summary>
@@ -996,7 +998,7 @@ namespace QTChinnok.Logic.Controllers
         /// Saves any changes in the underlying persistence (without authorization).
         /// </summary>
         /// <returns>The number of state entries written to the underlying database.</returns>
-        internal async Task<int> ExecuteSaveChangesAsync()
+        internal virtual async Task<int> ExecuteSaveChangesAsync()
         {
             var result = 0;
 

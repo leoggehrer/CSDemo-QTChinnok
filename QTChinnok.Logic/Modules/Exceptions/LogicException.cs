@@ -6,40 +6,35 @@ namespace QTChinnok.Logic.Modules.Exceptions
     /// <summary>
     /// Represents errors encountered while running the application.
     /// </summary>
-    public partial class LogicException : Exception
+    public partial class LogicException : CommonBase.Modules.Exceptions.ModuleException
     {
-        public int ErrorId { get; } = -1;
-
         /// <summary>
         /// Initializes a new instance of the LogicException class with a specified error message.
         /// </summary>
-        /// <param name="errorType">Identification of the error message.</param>
-        public LogicException(ErrorType errorType)
-            : base(ErrorMessage.GetAt(errorType))
+        /// <param name="errorId">Identification of the error message.</param>
+        public LogicException(int errorId)
+            : base(errorId)
         {
-            ErrorId = (int)errorType;
         }
 
         /// <summary>
         /// Initializes a new instance of the LogicException class with a specified error message.
         /// </summary>
-        /// <param name="errorType">Identification of the error message.</param>
+        /// <param name="errorId">Identification of the error message.</param>
         /// <param name="message">The message that describes the error.</param>
-        public LogicException(ErrorType errorType, string message)
-            : base($"{ErrorMessage.GetAt(errorType)}: {message}")
+        public LogicException(int errorId, string message)
+            : base(errorId, message)
         {
-            ErrorId = (int)errorType;
         }
 
         /// <summary>
         /// Initializes a new instance of the LogicException class with a specified error message.
         /// </summary>
-        /// <param name="errorType">Identification der Fehlermeldung.</param>
+        /// <param name="errorId">Identification der Fehlermeldung.</param>
         /// <param name="ex">Exception die aufgetreten ist.</param>
-        public LogicException(ErrorType errorType, Exception ex)
-            : base(ex.Message, ex.InnerException)
+        public LogicException(int errorId, Exception ex)
+            : base(errorId, ex)
         {
-            ErrorId = (int)errorType;
         }
 
         /// <summary>

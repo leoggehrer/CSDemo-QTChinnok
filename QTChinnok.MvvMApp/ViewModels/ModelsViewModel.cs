@@ -1,5 +1,4 @@
-﻿using Avalonia.Controls;
-using QTChinnok.MvvMApp.Views;
+﻿using QTChinnok.MvvMApp.Views;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -89,13 +88,13 @@ namespace QTChinnok.MvvMApp.ViewModels
                 OnPropertyChanged(nameof(Models));
             }
         }
-        protected virtual async void EditModel() 
+        protected virtual async void EditModel()
         {
             var view = ModelView;
 
             if (view != null && OtherViewModel.Window != null)
             {
-                if (view.ViewModel!= null)
+                if (view.ViewModel != null)
                 {
                     view.ViewModel!.Model = SelectedModel!;
                 }
@@ -137,8 +136,8 @@ namespace QTChinnok.MvvMApp.ViewModels
                     OnPropertyChanged(nameof(Models));
                 }
             }
-            #endregion methods
         }
+        #endregion methods
         protected virtual async Task LoadModelsAsync()
         {
             using var ctrl = CreateController();
@@ -147,7 +146,7 @@ namespace QTChinnok.MvvMApp.ViewModels
 
             _models.Clear();
             _models.AddRange(result.Select(e => ConvertTo(e)));
-            SelectedModel = SelectedModel != null ? _models.FirstOrDefault(m => m.Id== SelectedModel.Id) : null;
+            SelectedModel = SelectedModel != null ? _models.FirstOrDefault(m => m.Id == SelectedModel.Id) : null;
             OnOtherPropertyChanged(nameof(Models));
             OnOtherPropertyChanged(nameof(SelectedModel));
         }

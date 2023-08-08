@@ -1,9 +1,11 @@
 ﻿//@CodeCopy
 //MdStart
 #if ACCOUNT_ON && REVISION_ON
+using CommonBase.Contracts;
+
 namespace QTChinnok.Logic.Contracts.Revision
 {
-    public partial interface IHistoriesAccess<T> : Contracts.IDataAccess<T>
+    public partial interface IHistoriesAccess<T> : IDataAccess<T>
     {
     }
 }

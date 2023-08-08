@@ -8,8 +8,9 @@ namespace TemplateCodeGenerator.Logic.Generation
         public string LogicPostfix => ".Logic";
         public string WebApiPostfix => ".WebApi";
         public string AspMvcPostfix => ".AspMvc";
+        public string MVVMPostfix => ".WpfApp";
         public string AngularPostfix => ".AngularApp";
-        public string MVVMPostfix => ".MvvMApp";
+        public string ClientBlazorPostfix => ".ClientBlazorApp";
         #endregion Project-postfixes
 
         public string SolutionPath { get; }
@@ -30,11 +31,13 @@ namespace TemplateCodeGenerator.Logic.Generation
                 return result;
             }
         }
+
         #region ProjectNames
         public IEnumerable<string> ProjectNames => CommonBase.StaticLiterals.ProjectExtensions.Select(e => $"{SolutionName}{e}");
 
-        public string LogicCSProjectFilePath { get; }
         public string LogicAssemblyFilePath { get; }
+        public string LogicCSProjectFilePath { get; }
+
         public string LogicProjectName => ProjectNames.First(e => e.EndsWith($"{LogicPostfix}"));
         public string LogicSubPath => LogicProjectName;
         public string LogicControllersSubPath => StaticLiterals.ControllersFolder;
@@ -52,8 +55,10 @@ namespace TemplateCodeGenerator.Logic.Generation
         public string MVVMAppProjectName => ProjectNames.First(e => e.EndsWith($"{MVVMPostfix}"));
         public string MVVMAppSubPath => MVVMAppProjectName;
 
-        public string AngularAppProjectName => ProjectNames.First(e => e.EndsWith($"{AngularPostfix}"));
+        public string ClientBlazorProjectName => ProjectNames.First(e => e.EndsWith($"{ClientBlazorPostfix}"));
+        public string ClientBlazorSubPath => ClientBlazorProjectName;
 
+        public string AngularAppProjectName => ProjectNames.First(e => e.EndsWith($"{AngularPostfix}"));
         #endregion ProjectNames
 
         private SolutionProperties(string solutionPath)
@@ -61,8 +66,9 @@ namespace TemplateCodeGenerator.Logic.Generation
             SolutionPath = solutionPath;
             SolutionName = GetSolutionName(solutionPath);
             SolutionFilePath = GetSolutionFilePath(solutionPath);
-            LogicCSProjectFilePath = GetLogicCSProjectFilePath(solutionPath);
+
             LogicAssemblyFilePath = GetLogicAssemblyFilePath(solutionPath);
+            LogicCSProjectFilePath = GetLogicCSProjectFilePath(solutionPath);
         }
 
         public static SolutionProperties Create()

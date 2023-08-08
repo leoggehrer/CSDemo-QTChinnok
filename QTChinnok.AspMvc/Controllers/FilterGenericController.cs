@@ -4,13 +4,12 @@ namespace QTChinnok.AspMvc.Controllers
 {
     using Microsoft.AspNetCore.Mvc;
     using AspMvc.Models.View;
-    using Logic.Contracts;
 
     public abstract partial class FilterGenericController<TAccessModel, TViewModel, TFilterModel, TAccessContract> : Controllers.GenericController<TAccessModel, TViewModel>
-        where TAccessModel : IIdentifyable, new()
+        where TAccessModel : BaseContracts.IIdentifyable, new()
         where TViewModel : class, new()
         where TFilterModel : class, IFilterModel, new()
-        where TAccessContract : IBaseAccess<TAccessModel>
+        where TAccessContract : BaseContracts.IBaseAccess<TAccessModel>
     {
         static FilterGenericController()
         {
@@ -19,9 +18,9 @@ namespace QTChinnok.AspMvc.Controllers
         }
         static partial void ClassConstructing();
         static partial void ClassConstructed();
-        private string OrderByName => $"{ControllerName}.OrderBy";
-        private static string FilterName => typeof(TFilterModel).Name;
         protected abstract string ControllerName { get; }
+        private static string FilterName => typeof(TFilterModel).Name;
+        private string OrderByName => $"{ControllerName}.OrderBy";
         protected FilterGenericController(TAccessContract dataAccess)
             : base(dataAccess)
         {

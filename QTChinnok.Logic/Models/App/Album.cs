@@ -63,12 +63,22 @@ namespace QTChinnok.Logic.Models.App
         }
         
         private CommonBase.Modules.Collection.DelegateList<QTChinnok.Logic.Entities.App.Track, QTChinnok.Logic.Models.App.Track>? _tracks;
+        internal CommonBase.Modules.Collection.DelegateList<QTChinnok.Logic.Entities.App.Track, QTChinnok.Logic.Models.App.Track>? InternalTracks
+        {
+            get => _tracks;
+            set => _tracks = value;
+        }
         public System.Collections.Generic.IList<QTChinnok.Logic.Models.App.Track> Tracks
         {
             get => _tracks ??= new CommonBase.Modules.Collection.DelegateList<QTChinnok.Logic.Entities.App.Track, QTChinnok.Logic.Models.App.Track>(Source.Tracks, e => QTChinnok.Logic.Models.App.Track.Create(e));
         }
         
         private CommonBase.Modules.Collection.DelegateList<QTChinnok.Logic.Entities.App.MusicCollection, QTChinnok.Logic.Models.App.MusicCollection>? _musicCollections;
+        internal CommonBase.Modules.Collection.DelegateList<QTChinnok.Logic.Entities.App.MusicCollection, QTChinnok.Logic.Models.App.MusicCollection>? InternalMusicCollections
+        {
+            get => _musicCollections;
+            set => _musicCollections = value;
+        }
         public System.Collections.Generic.IList<QTChinnok.Logic.Models.App.MusicCollection> MusicCollections
         {
             get => _musicCollections ??= new CommonBase.Modules.Collection.DelegateList<QTChinnok.Logic.Entities.App.MusicCollection, QTChinnok.Logic.Models.App.MusicCollection>(Source.MusicCollections, e => QTChinnok.Logic.Models.App.MusicCollection.Create(e));

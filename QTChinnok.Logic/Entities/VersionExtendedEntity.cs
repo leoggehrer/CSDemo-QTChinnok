@@ -2,7 +2,7 @@
 //MdStart
 namespace QTChinnok.Logic.Entities
 {
-    using QTChinnok.Logic.Contracts;
+    using CommonBase.Contracts;
 #if ACCOUNT_ON
     using QTChinnok.Logic.Entities.Account;
 #endif

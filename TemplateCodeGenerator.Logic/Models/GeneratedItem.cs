@@ -47,7 +47,7 @@ namespace TemplateCodeGenerator.Logic.Models
             }
             Source.AddRange(codeLines);
         }
-        public void FormatCSharpCode(bool removeBlockComments = false, bool removeLineComments = false)
+        public void FormatCSharpCode()
         {
             int indent = 0;
 

@@ -3,7 +3,7 @@
 using System;
 namespace QTChinnok.MvvMApp.Models
 {
-	public abstract partial class VersionModel : ModelObject, Logic.Contracts.IVersionable
+	public abstract partial class VersionModel : ModelObject, BaseContracts.IVersionable
 	{
 #if ROWVERSION_ON
         /// <summary>

@@ -40,7 +40,9 @@ namespace TemplateCodeGenerator.Logic.Generation
         }
         private bool CanCreate(Type type)
         {
+#pragma warning disable IDE0075 // Simplify conditional expression
             bool create = EntityProject.IsNotAGenerationEntity(type) ? false : true;
+#pragma warning restore IDE0075 // Simplify conditional expression
 
             CanCreateModel(type, ref create);
             return create;
@@ -154,7 +156,9 @@ namespace TemplateCodeGenerator.Logic.Generation
             result.Source.InsertRange(result.Source.Count - 1, ReadCustomCode(projectPath, result));
             result.Source.Insert(result.Source.Count - 1, StaticLiterals.AngularCustomCodeEndLabel);
 
+#pragma warning disable IDE0028 // Simplify collection initialization
             var imports = new List<string>();
+#pragma warning restore IDE0028 // Simplify collection initialization
 
             imports.Add("import { IVersionEntity } from '@app-core-models/i-version-entity';");
             imports.AddRange(CreateTypeImports(type, types));

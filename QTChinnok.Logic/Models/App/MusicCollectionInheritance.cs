@@ -1,7 +1,7 @@
 ﻿//@GeneratedCode
 namespace QTChinnok.Logic.Models.App
 {
-    partial class MusicCollection : QTChinnok.Logic.Models.VersionModel
+    partial class MusicCollection : VersionModel
     {
     }
 }

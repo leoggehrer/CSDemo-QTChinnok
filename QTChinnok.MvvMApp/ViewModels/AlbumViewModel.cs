@@ -1,4 +1,4 @@
-﻿using QTChinnok.Logic.Contracts;
+﻿#if GENERATEDCODE_ON
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -43,7 +43,7 @@ namespace QTChinnok.MvvMApp.ViewModels
         {
             OnPropertiesChanged(nameof(ArtistList));
         }
-        public override IDataAccess<TAlbumEntity> CreateController()
+        public override Logic.Contracts.App.IAlbumsAccess CreateController()
         {
             return new Logic.Controllers.App.AlbumsController();
         }
@@ -83,3 +83,4 @@ namespace QTChinnok.MvvMApp.ViewModels
         }
     }
 }
+#endif

@@ -51,6 +51,11 @@ namespace QTChinnok.Logic.Models.App
         }
         
         private CommonBase.Modules.Collection.DelegateList<QTChinnok.Logic.Entities.App.Album, QTChinnok.Logic.Models.App.Album>? _albums;
+        internal CommonBase.Modules.Collection.DelegateList<QTChinnok.Logic.Entities.App.Album, QTChinnok.Logic.Models.App.Album>? InternalAlbums
+        {
+            get => _albums;
+            set => _albums = value;
+        }
         public System.Collections.Generic.IList<QTChinnok.Logic.Models.App.Album> Albums
         {
             get => _albums ??= new CommonBase.Modules.Collection.DelegateList<QTChinnok.Logic.Entities.App.Album, QTChinnok.Logic.Models.App.Album>(Source.Albums, e => QTChinnok.Logic.Models.App.Album.Create(e));

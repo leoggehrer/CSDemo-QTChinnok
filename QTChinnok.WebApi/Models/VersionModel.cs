@@ -1,7 +1,7 @@
 ﻿//@CodeCopy
 //MdStart
-using QTChinnok.Logic.Contracts;
-using System.ComponentModel.DataAnnotations;
+
+using CommonBase.Contracts;
 
 namespace QTChinnok.WebApi.Models
 {

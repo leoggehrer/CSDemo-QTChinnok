@@ -1,7 +1,7 @@
 ﻿
 namespace QTChinnok.WpfApp.Models
 {
-    public class Track : Logic.Contracts.IIdentifyable
+    public class Track : BaseContracts.IIdentifyable
     {
         public Track()
         {

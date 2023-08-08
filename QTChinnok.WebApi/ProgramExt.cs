@@ -1,5 +1,7 @@
 ﻿//@CodeCopy
 //MdStart
+using Microsoft.Net.Http.Headers;
+
 namespace QTChinnok.WebApi
 {
     /// <summary>
@@ -26,6 +28,10 @@ namespace QTChinnok.WebApi
         /// <param name="app"></param>
         public static void AfterBuild(WebApplication app)
         {
+            app.UseCors(policy => policy.AllowAnyOrigin()
+                                        .AllowAnyMethod()
+                                        .WithHeaders(HeaderNames.ContentType));
+
             AddConfigures(app);
         }
         static partial void AddServices(WebApplicationBuilder builder);

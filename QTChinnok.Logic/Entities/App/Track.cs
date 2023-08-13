@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using QTChinnok.Logic.Entities.Base;
 
 namespace QTChinnok.Logic.Entities.App
 {
@@ -22,5 +18,9 @@ namespace QTChinnok.Logic.Entities.App
         public string? Composer { get; set; }
         public int Milliseconds { get; set; }
         public decimal UnitPrice { get; set; }
+        #region navigation properties
+        public Album? Album { get; set; }
+        public Genre? Genre { get; set; }
+        #endregion  navigation properties
     }
 }

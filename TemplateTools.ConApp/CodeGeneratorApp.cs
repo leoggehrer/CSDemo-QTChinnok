@@ -1,14 +1,10 @@
 ﻿//@CodeCopy
 //MdStart
-using System;
 using System.Diagnostics;
-using System.Diagnostics.Metrics;
-using TemplateCodeGenerator.Logic.Generation;
+using TemplateCodeGenerator.Logic;
 
 namespace TemplateTools.ConApp
 {
-    using Logic = TemplateCodeGenerator.Logic;
-
     internal partial class CodeGeneratorApp
     {
         #region Class-Constructors
@@ -16,6 +12,7 @@ namespace TemplateTools.ConApp
         {
             ClassConstructing();
             ToGroupFile = false;
+            IgnoreFiles = true;
             SolutionPath = Program.SourcePath;
             ClassConstructed();
         }
@@ -25,6 +22,7 @@ namespace TemplateTools.ConApp
 
         #region Properties
         private static bool ToGroupFile { get; set; }
+        private static bool IgnoreFiles { get; set; }
         private static string SolutionPath { get; set; }
         #endregion Properties
 
@@ -32,6 +30,7 @@ namespace TemplateTools.ConApp
         public static void RunApp()
         {
             var toGroupFile = ToGroupFile;
+            var ignoreFiles = IgnoreFiles;
             var input = string.Empty;
             var saveForeColor = Console.ForegroundColor;
             
@@ -48,12 +47,14 @@ namespace TemplateTools.ConApp
                 Console.WriteLine($"Code generation for: {sourceSolutionName}");
                 Console.WriteLine($"From file path:  {SolutionPath}");
                 Console.WriteLine($"Generation into: {(toGroupFile ? "Group files" : "Single files")}");
+                Console.WriteLine($"Ignore files:    {(ignoreFiles ? "Yes" : "No")}");
                 Console.WriteLine();
                 Console.WriteLine($"[{++menuIndex}] Change source path");           // 1
                 Console.WriteLine($"[{++menuIndex}] Compile logic project...");     // 2
                 Console.WriteLine($"[{++menuIndex}] Change group file flag");       // 3
-                Console.WriteLine($"[{++menuIndex}] Delete generation files...");   // 4
-                Console.WriteLine($"[{++menuIndex}] Start code generation...");     // 5
+                Console.WriteLine($"[{++menuIndex}] Change ignore files flag");     // 4
+                Console.WriteLine($"[{++menuIndex}] Delete generation files...");   // 5
+                Console.WriteLine($"[{++menuIndex}] Start code generation...");     // 6
                 Console.WriteLine("[x|X] Exit");
                 Console.WriteLine();
                 Console.Write("Choose: ");
@@ -62,7 +63,7 @@ namespace TemplateTools.ConApp
                 Console.ForegroundColor = saveForeColor;
                 if (Int32.TryParse(input, out var select))
                 {
-                    var solutionProperties = Logic.Generation.SolutionProperties.Create(SolutionPath);
+                    var solutionProperties = SolutionProperties.Create(SolutionPath);
 
                     if (select == 1)
                     {
@@ -94,7 +95,7 @@ namespace TemplateTools.ConApp
                             SolutionPath = selectOrPath;
                         }
                     }
-                    if (select == 2 || select == 5)
+                    if (select == 2 || select == 6)
                     {
                         ExecuteBuildProject(solutionProperties);
                         if (select == 2)
@@ -109,11 +110,26 @@ namespace TemplateTools.ConApp
                     }
                     if (select == 4)
                     {
-                        Logic.Generator.DeleteGeneratedFiles(SolutionPath);
+                        ignoreFiles = !ignoreFiles;
                     }
                     if (select == 5)
                     {
-                        ExecuteRunProject(solutionProperties, "3");
+                        Generator.DeleteGeneratedFiles(SolutionPath);
+                    }
+                    if (select == 6)
+                    {
+                        string command = "4";
+
+                        if (toGroupFile)
+                        {
+                            command = "1 " + command;
+                        }
+
+                        if (ignoreFiles == false)
+                        {
+                            command = "2 " + command;
+                        }
+                        ExecuteRunProject(solutionProperties, command);
                     }
                     Thread.Sleep(700);
                 }

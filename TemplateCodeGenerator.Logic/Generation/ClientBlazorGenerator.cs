@@ -360,7 +360,7 @@ namespace TemplateCodeGenerator.Logic.Generation
         }
         private T QuerySetting<T>(Common.ItemType itemType, string itemName, string valueName, string defaultValue)
         {
-            return QuerySetting<T>(Common.UnitType.AspMvc, itemType, itemName, valueName, defaultValue);
+            return QuerySetting<T>(Common.UnitType.ClientBlazor, itemType, itemName, valueName, defaultValue);
         }
         #endregion query settings
     }

@@ -26,11 +26,12 @@ namespace TemplateCodeGenerator.Logic
         #endregion Code-Generation
 
         #region Project Extensions
-        public static string LogicExtension => ".Logic";
-        public static string WebApiExtension => ".WebApi";
-        public static string AspMvcExtension => ".AspMvc";
-        public static string MVVMExtension => ".WpfApp";
-        public static string ClientBlazorExtension => ".ClientBlazorApp";
+        public static string LogicExtension => CommonStaticLiterals.LogicExtension;
+        public static string WebApiExtension => CommonStaticLiterals.WebApiExtension;
+        public static string AspMvcExtension => CommonStaticLiterals.AspMvcExtension;
+        public static string MVVMExtension => CommonStaticLiterals.MVVMExtension;
+        public static string AngularExtension => CommonStaticLiterals.AngularExtension;
+        public static string ClientBlazorExtension => CommonStaticLiterals.ClientBlazorExtension;
         #endregion Project Extensions
 
         #region Entity and service properties

@@ -29,6 +29,24 @@ namespace TemplateCodeGenerator.Logic.Generation
         /// <returns>The typescript property name.</returns>
         public static string CreateTSPropertyName (PropertyInfo propertyInfo) => $"{Char.ToLower(propertyInfo.Name[0])}{propertyInfo.Name[1..]}";
 
+        #region Solution properties
+        public string[] TemplateProjects
+        {
+            get
+            {
+                var result = new List<string>(CommonBase.StaticLiterals.TemplateProjects);
+
+                foreach (var extension in CommonBase.StaticLiterals.TemplateProjectExtensions)
+                {
+                    result.Add($"{SolutionName}{extension}");
+                }
+                result.AddRange(CommonBase.StaticLiterals.TemplateToolProjects);
+                return result.ToArray();
+            }
+        }
+        #endregion Solution properties
+
+        #region Models properties
         public static string CreateModelName(Type type) => type.Name;
         public string CreateModelType(Type type)
         {
@@ -50,6 +68,7 @@ namespace TemplateCodeGenerator.Logic.Generation
         {
             return $"{CreateModelNamespace(type)}.{CreateFilterModelName(type)}";
         }
+        #endregion Models properties
 
         public string CreateModelSubType(Type type)
         {
@@ -124,7 +143,7 @@ namespace TemplateCodeGenerator.Logic.Generation
         }
         #endregion Contracts properties
 
-        #region Controller and service properties
+        #region Controller properties
         public string CreateLogicControllerType(Type type)
         {
             return $"{SolutionName}{StaticLiterals.LogicExtension}.{CreateControllerSubType(type)}";
@@ -160,7 +179,7 @@ namespace TemplateCodeGenerator.Logic.Generation
         {
             return Path.Combine(CreateControllerSubNamespace(type).Replace(".", Path.DirectorySeparatorChar.ToString()), $"{CreateControllerClassName(type)}{postFix}{fileExtension}");
         }
-        #endregion Controller service properties
+        #endregion Controller properties
 
         #region Service properties
         public string CreateLogicServiceType(Type type)

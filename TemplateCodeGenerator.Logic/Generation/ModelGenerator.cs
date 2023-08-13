@@ -3,6 +3,7 @@
 namespace TemplateCodeGenerator.Logic.Generation
 {
     using System.Reflection;
+    using TemplateCodeGenerator.Logic.Common;
     using TemplateCodeGenerator.Logic.Contracts;
     internal abstract partial class ModelGenerator : ClassGenerator
     {
@@ -98,18 +99,25 @@ namespace TemplateCodeGenerator.Logic.Generation
 
         #region create attributes
         partial void CreateModelAttributes(Type type, List<string> codeLines);
-        protected virtual void CreateModelPropertyAttributes(PropertyInfo propertyInfo, List<string> codeLines)
+        protected virtual void CreateModelPropertyAttributes(PropertyInfo propertyInfo, UnitType unitType, List<string> codeLines)
         {
             var handled = false;
 
-            BeforeCreateModelPropertyAttributes(propertyInfo, codeLines, ref handled);
+            BeforeCreateModelPropertyAttributes(propertyInfo, unitType, codeLines, ref handled);
             if (handled == false)
             {
+                var itemName = $"{propertyInfo.DeclaringType!.Name}.{propertyInfo.Name}";
+                var attributes = QuerySetting<string>(unitType, ItemType.ModelProperty, itemName, StaticLiterals.Attributes, string.Empty);
+
+                if (string.IsNullOrEmpty(attributes) == false)
+                {
+                    codeLines.Add($"[{attributes}]");
+                }
             }
-            AfterCreateModelPropertyAttributes(propertyInfo, codeLines);
+            AfterCreateModelPropertyAttributes(propertyInfo, unitType, codeLines);
         }
-        partial void BeforeCreateModelPropertyAttributes(PropertyInfo propertyInfo, List<string> codeLines, ref bool handled);
-        partial void AfterCreateModelPropertyAttributes(PropertyInfo propertyInfo, List<string> codeLines);
+        partial void BeforeCreateModelPropertyAttributes(PropertyInfo propertyInfo, UnitType unitType, List<string> codeLines, ref bool handled);
+        partial void AfterCreateModelPropertyAttributes(PropertyInfo propertyInfo, UnitType unitType, List<string> codeLines);
         #endregion create attributes
 
         #region converters
@@ -121,7 +129,7 @@ namespace TemplateCodeGenerator.Logic.Generation
         protected virtual string ConvertModelBaseType(string modelBaseType) => modelBaseType;
         #endregion converters
 
-        protected virtual IGeneratedItem CreateModelFromType(Type type, Common.UnitType unitType, Common.ItemType itemType)
+        protected virtual IGeneratedItem CreateModelFromType(Type type, UnitType unitType, ItemType itemType)
         {
             var modelName = ConvertModelName(CreateModelName(type));
             var modelSubType = ConvertModelSubType(ItemProperties.CreateModelSubType(type));
@@ -149,18 +157,22 @@ namespace TemplateCodeGenerator.Logic.Generation
             foreach (var propertyInfo in generateProperties)
             {
                 if (CanCreate(propertyInfo)
-                    && QuerySetting<bool>(unitType, Common.ItemType.ModelProperty, type, StaticLiterals.Generate, "True"))
+                    && QuerySetting<bool>(unitType, ItemType.ModelProperty, type, StaticLiterals.Generate, "True"))
                 {
-                    var propertyAttributes = QuerySetting<string>(unitType, Common.ItemType.Property, type, propertyInfo.Name, StaticLiterals.Attributes, string.Empty);
-
                     result.AddRange(CreateComment(propertyInfo));
-                    CreateModelPropertyAttributes(propertyInfo, result.Source);
-                    result.Add($"{(propertyAttributes.HasContent() ? $"[{propertyAttributes}]" : string.Empty)}");
+                    CreateModelPropertyAttributes(propertyInfo, unitType, result.Source);
                     result.AddRange(CreateProperty(type, propertyInfo));
                 }
             }
 
-            if (unitType == Common.UnitType.Logic)
+            var lambda = QuerySetting<string>(unitType, itemType, type, ItemType.Lambda.ToString(), string.Empty);
+
+            if (lambda.HasContent())
+            {
+                result.Add($"{lambda};");
+            }
+
+            if (unitType == UnitType.Logic)
             {
                 var copyType = type.FullName!;
                 var modelType = ItemProperties.CreateModelType(type);
@@ -170,7 +182,7 @@ namespace TemplateCodeGenerator.Logic.Generation
                 result.AddRange(CreateCopyProperties("internal", type, copyType));
                 result.AddRange(CreateCopyProperties("public", type, modelType));
             }
-            else if (unitType == Common.UnitType.WebApi)
+            else if (unitType == UnitType.WebApi)
             {
                 result.AddRange(CreateFactoryMethod(false, ItemProperties.CreateModelType(type)));
                 if (type.IsPublic)
@@ -191,7 +203,7 @@ namespace TemplateCodeGenerator.Logic.Generation
                     result.AddRange(CreateCopyProperties("public", type, copyType));
                 }
             }
-            else if (unitType == Common.UnitType.AspMvc)
+            else if (unitType == UnitType.AspMvc)
             {
                 result.AddRange(CreateFactoryMethod(false, ItemProperties.CreateModelType(type)));
                 if (type.IsPublic)
@@ -212,7 +224,7 @@ namespace TemplateCodeGenerator.Logic.Generation
                     result.AddRange(CreateCopyProperties("public", type, copyType));
                 }
             }
-            else if (unitType == Common.UnitType.ClientBlazor) 
+            else if (unitType == UnitType.ClientBlazor) 
             { 
             }
             else
@@ -226,7 +238,7 @@ namespace TemplateCodeGenerator.Logic.Generation
             result.FormatCSharpCode();
             return result;
         }
-        protected virtual IGeneratedItem CreateModelInheritance(Type type, Common.UnitType unitType, Common.ItemType itemType)
+        protected virtual IGeneratedItem CreateModelInheritance(Type type, UnitType unitType, ItemType itemType)
         {
             var modelName = ConvertModelName(CreateModelName(type));
             var modelNamespace = ConvertModelNamespace(ItemProperties.CreateModelNamespace(type));
@@ -246,7 +258,7 @@ namespace TemplateCodeGenerator.Logic.Generation
             result.FormatCSharpCode();
             return result;
         }
-        protected virtual IGeneratedItem CreateDelegateModelFromType(Type type, Common.UnitType unitType, Common.ItemType itemType)
+        protected virtual IGeneratedItem CreateDelegateModelFromType(Type type, UnitType unitType, ItemType itemType)
         {
             var modelName = CreateModelName(type);
             var modelType = ItemProperties.CreateModelType(type);
@@ -278,24 +290,24 @@ namespace TemplateCodeGenerator.Logic.Generation
 
             foreach (var modelItem in generateProperties)
             {
-                if (QuerySetting<bool>(unitType, Common.ItemType.ModelProperty, modelItem.DeclaringName(), StaticLiterals.Generate, "True"))
+                if (QuerySetting<bool>(unitType, ItemType.ModelProperty, modelItem.DeclaringName(), StaticLiterals.Generate, "True"))
                 {
-                    CreateModelPropertyAttributes(modelItem, result.Source);
+                    CreateModelPropertyAttributes(modelItem, unitType, result.Source);
                     result.AddRange(CreateDelegateProperty(modelItem, "Source", modelItem));
                 }
             }
-            if (unitType == Common.UnitType.Logic)
+            if (unitType == UnitType.Logic)
             {
                 var visibility = type.IsPublic ? "public" : "internal";
 
                 result.AddRange(CreateDelegateCopyProperties("internal", type, entitySubType));
                 result.AddRange(CreateDelegateCopyProperties(visibility, type, modelType));
             }
-            else if (unitType == Common.UnitType.WebApi)
+            else if (unitType == UnitType.WebApi)
             {
                 result.AddRange(CreateCopyProperties("public", type, modelType));
             }
-            else if (unitType == Common.UnitType.AspMvc)
+            else if (unitType == UnitType.AspMvc)
             {
                 result.AddRange(CreateCopyProperties("public", type, modelType, p => true));
             }
@@ -331,7 +343,7 @@ namespace TemplateCodeGenerator.Logic.Generation
         }
 
         #region query settings
-        protected T QuerySetting<T>(Common.UnitType unitType, Common.ItemType itemType, Type type, string valueName, string defaultValue)
+        protected T QuerySetting<T>(UnitType unitType, ItemType itemType, Type type, string valueName, string defaultValue)
         {
             T result;
 
@@ -346,7 +358,7 @@ namespace TemplateCodeGenerator.Logic.Generation
             }
             return result;
         }
-        protected T QuerySetting<T>(Common.UnitType unitType, Common.ItemType itemType, Type type, string itemSubName, string valueName, string defaultValue)
+        protected T QuerySetting<T>(UnitType unitType, ItemType itemType, Type type, string itemSubName, string valueName, string defaultValue)
         {
             T result;
 
@@ -361,7 +373,7 @@ namespace TemplateCodeGenerator.Logic.Generation
             }
             return result;
         }
-        protected T QuerySetting<T>(Common.UnitType unitType, Common.ItemType itemType, string itemName, string valueName, string defaultValue)
+        protected T QuerySetting<T>(UnitType unitType, ItemType itemType, string itemName, string valueName, string defaultValue)
         {
             T result;
 

@@ -6,17 +6,15 @@ namespace CommonBase.Extensions
 	{
         public static string GetError(this Exception source)
         {
-            var tab = string.Empty;
-            var errMsg = source.Message;
+            var result = source.Message.Replace("See the inner exception for details.", string.Empty).Trim();
             Exception? innerException = source.InnerException;
 
             while (innerException != null)
             {
-                tab += "\t";
-                errMsg = $"{errMsg}{Environment.NewLine}{tab}{innerException.Message}";
+                result = $"{result} {innerException.Message}";
                 innerException = innerException.InnerException;
             }
-            return errMsg;
+            return result;
         }
     }
 }

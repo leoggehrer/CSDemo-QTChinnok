@@ -7,7 +7,7 @@ namespace TemplateCodeGenerator.Logic.Generation
     internal sealed partial class EntityProject
     {
         public ISolutionProperties SolutionProperties { get; private set; }
-        public string ProjectName => $"{SolutionProperties.SolutionName}{SolutionProperties.LogicPostfix}";
+        public string ProjectName => $"{SolutionProperties.SolutionName}{SolutionProperties.LogicExtension}";
         public string ProjectPath => Path.Combine(SolutionProperties.SolutionPath, ProjectName);
 
         private EntityProject(ISolutionProperties solutionProperties)

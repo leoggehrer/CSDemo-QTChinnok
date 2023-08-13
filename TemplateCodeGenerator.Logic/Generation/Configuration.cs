@@ -72,8 +72,6 @@ namespace TemplateCodeGenerator.Logic.Generation
             }
         }
         public ISolutionProperties SolutionProperties { get; init; }
-
-
         #endregion properties
 
         #region construction

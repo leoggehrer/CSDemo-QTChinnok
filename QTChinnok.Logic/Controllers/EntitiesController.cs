@@ -60,6 +60,10 @@ namespace QTChinnok.Logic.Controllers
             }
         }
         /// <summary>
+        /// Gets the internal entity set as queryable.
+        /// </summary>
+        internal IQueryable<TEntity> QuerySet => EntitySet.AsQueryable();
+        /// <summary>
         /// Gets the internal includes.
         /// </summary>
         /// <returns></returns>
@@ -71,7 +75,6 @@ namespace QTChinnok.Logic.Controllers
         protected EntitiesController()
             : base(new DataContext.ProjectDbContext())
         {
-
         }
         /// <summary>
         /// Creates an instance.
@@ -80,7 +83,6 @@ namespace QTChinnok.Logic.Controllers
         protected EntitiesController(ControllerObject other)
             : base(other)
         {
-
         }
 
         #region MaxPageSize and Count

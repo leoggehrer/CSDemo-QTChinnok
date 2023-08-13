@@ -32,7 +32,7 @@ namespace TemplateCodeGenerator.Logic.Generation
             GenerateAllAccessModels = QuerySetting<bool>(Common.ItemType.AccessModel, StaticLiterals.AllItems, StaticLiterals.Generate, generateAll);
             GenerateAllServiceModels = QuerySetting<bool>(Common.ItemType.ServiceModel, StaticLiterals.AllItems, StaticLiterals.Generate, generateAll);
 
-            GenerateAllFilterModels = QuerySetting<bool>(Common.ItemType.FilterModel, StaticLiterals.AllItems, StaticLiterals.Generate, generateAll);
+            GenerateAllFilterModels = QuerySetting<bool>(Common.ItemType.AccessFilterModel, StaticLiterals.AllItems, StaticLiterals.Generate, generateAll);
 
             GenerateAllAccessControllers = QuerySetting<bool>(Common.ItemType.AccessController, StaticLiterals.AllItems, StaticLiterals.Generate, generateAll);
             GenerateAllServiceControllers = QuerySetting<bool>(Common.ItemType.ServiceController, StaticLiterals.AllItems, StaticLiterals.Generate, generateAll);
@@ -98,8 +98,8 @@ namespace TemplateCodeGenerator.Logic.Generation
                 if (CanCreate(type)
                     && QuerySetting<bool>(Common.UnitType.AspMvc, Common.ItemType.ServiceModel, type, StaticLiterals.Generate, settingDefault))
                 {
-                    result.Add(CreateModelFromType(type, Common.UnitType.AspMvc, Common.ItemType.AccessModel));
-                    result.Add(CreateModelInheritance(type, Common.UnitType.AspMvc, Common.ItemType.AccessModel));
+                    result.Add(CreateModelFromType(type, Common.UnitType.AspMvc, Common.ItemType.ServiceModel));
+                    result.Add(CreateModelInheritance(type, Common.UnitType.AspMvc, Common.ItemType.ServiceModel));
                 }
             }
 
@@ -109,9 +109,9 @@ namespace TemplateCodeGenerator.Logic.Generation
                 var settingDefault = GenerateAllFilterModels.ToString();
 
                 if (CanCreate(type)
-                    && QuerySetting<bool>(Common.UnitType.AspMvc, Common.ItemType.FilterModel, type, StaticLiterals.Generate, settingDefault))
+                    && QuerySetting<bool>(Common.UnitType.AspMvc, Common.ItemType.AccessFilterModel, type, StaticLiterals.Generate, settingDefault))
                 {
-                    result.Add(CreateFilterModelFromType(type, Common.UnitType.AspMvc, Common.ItemType.FilterModel));
+                    result.Add(CreateFilterModelFromType(type, Common.UnitType.AspMvc, Common.ItemType.AccessFilterModel));
                 }
             }
 
@@ -121,9 +121,9 @@ namespace TemplateCodeGenerator.Logic.Generation
                 var settingDefault = GenerateAllFilterModels.ToString();
 
                 if (CanCreate(type)
-                    && QuerySetting<bool>(Common.UnitType.AspMvc, Common.ItemType.FilterModel, type, StaticLiterals.Generate, settingDefault))
+                    && QuerySetting<bool>(Common.UnitType.AspMvc, Common.ItemType.ServiceFilterModel, type, StaticLiterals.Generate, settingDefault))
                 {
-                    result.Add(CreateFilterModelFromType(type, Common.UnitType.AspMvc, Common.ItemType.FilterModel));
+                    result.Add(CreateFilterModelFromType(type, Common.UnitType.AspMvc, Common.ItemType.ServiceFilterModel));
                 }
             }
             return result;

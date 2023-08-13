@@ -17,18 +17,9 @@ namespace QTChinnok.AspMvc
             builder.Services.AddTransient<Logic.Contracts.Account.IRolesAccess<Logic.Models.Account.Role>, Logic.Facades.Account.RolesFacade>();
             builder.Services.AddTransient<Logic.Contracts.Account.IUsersAccess, Logic.Facades.Account.UsersFacade>();
             builder.Services.AddTransient<Logic.Contracts.Account.IIdentitiesAccess, Logic.Facades.Account.IdentitiesFacade>();
-#if ACCESSRULES_ON
+    #if ACCESSRULES_ON
             builder.Services.AddTransient<Logic.Contracts.Access.IAccessRulesAccess, Logic.Facades.Access.AccessRulesFacade>();
-#endif
-#endif
-
-#if GENERATEDCODE_ON
-            builder.Services.AddTransient<Logic.Contracts.App.IMusicCollectionsAccess, 
-                Logic.Controllers.App.MusicCollectionsController>();
-            builder.Services.AddTransient<Logic.Contracts.App.IAlbumsAccess, 
-                Logic.Controllers.App.AlbumsController>();
-            builder.Services.AddTransient<Logic.Contracts.Base.IArtistsAccess,
-                Logic.Controllers.Base.ArtistsController>();
+    #endif
 #endif
             AddServices(builder);
         }

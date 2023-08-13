@@ -430,7 +430,8 @@ namespace TemplateTooles.ConApp
                 }
 
                 if (sourceLines.Any()
-                    && sourceLines.First().Contains(StaticLiterals.IgnoreLabel) == false)
+                    && sourceLines.First().Contains(StaticLiterals.IgnoreLabel) == false
+                    && sourceLines.First().Contains(StaticLiterals.GeneratedCodeLabel) == false)
                 {
                     foreach (var sourceLine in sourceLines)
                     {

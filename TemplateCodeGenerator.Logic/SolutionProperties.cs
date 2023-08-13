@@ -1,16 +1,17 @@
 ﻿//@CodeCopy
 //MdStart
-namespace TemplateCodeGenerator.Logic.Generation
+
+namespace TemplateCodeGenerator.Logic
 {
     public sealed partial class SolutionProperties : Contracts.ISolutionProperties
     {
         #region Project-postfixes
-        public string LogicPostfix => ".Logic";
-        public string WebApiPostfix => ".WebApi";
-        public string AspMvcPostfix => ".AspMvc";
-        public string MVVMPostfix => ".WpfApp";
-        public string AngularPostfix => ".AngularApp";
-        public string ClientBlazorPostfix => ".ClientBlazorApp";
+        public string LogicExtension => StaticLiterals.LogicExtension;
+        public string WebApiExtension => StaticLiterals.WebApiExtension;
+        public string AspMvcExtension => StaticLiterals.AspMvcExtension;
+        public string MVVMExtension => StaticLiterals.MVVMExtension;
+        public string AngularExtension => StaticLiterals.AngularExtension;
+        public string ClientBlazorExtension => StaticLiterals.ClientBlazorExtension;
         #endregion Project-postfixes
 
         public string SolutionPath { get; }
@@ -18,7 +19,7 @@ namespace TemplateCodeGenerator.Logic.Generation
         public string SolutionFilePath { get; }
         public string? CompilePath { get; set; }
         public Type[]? LogicAssemblyTypes { get; set; }
-        public string? CompileLogicAssemblyFilePath 
+        public string? CompileLogicAssemblyFilePath
         {
             get
             {
@@ -33,32 +34,47 @@ namespace TemplateCodeGenerator.Logic.Generation
         }
 
         #region ProjectNames
-        public IEnumerable<string> ProjectNames => CommonBase.StaticLiterals.ProjectExtensions.Select(e => $"{SolutionName}{e}");
+        public IEnumerable<string> TemplateProjectNames => CommonBase.StaticLiterals.TemplateProjectExtensions.Select(e => $"{SolutionName}{e}");
+        public IEnumerable<string> AllTemplateProjectNames
+        {
+            get
+            {
+                var result = new List<string>(CommonBase.StaticLiterals.TemplateProjects);
+
+                foreach (var extension in CommonBase.StaticLiterals.TemplateProjectExtensions)
+                {
+                    result.Add($"{SolutionName}{extension}");
+                }
+                result.AddRange(CommonBase.StaticLiterals.TemplateToolProjects);
+                return result.ToArray();
+            }
+        }
+        public IEnumerable<string> TemplateProjectPaths => TemplateProjectNames.Select(tpn => Path.Combine(SolutionPath, tpn));
 
         public string LogicAssemblyFilePath { get; }
         public string LogicCSProjectFilePath { get; }
 
-        public string LogicProjectName => ProjectNames.First(e => e.EndsWith($"{LogicPostfix}"));
+        public string LogicProjectName => TemplateProjectNames.First(e => e.EndsWith($"{LogicExtension}"));
         public string LogicSubPath => LogicProjectName;
         public string LogicControllersSubPath => StaticLiterals.ControllersFolder;
         public string LogicEntitiesSubPath => StaticLiterals.EntitiesFolder;
         public string LogicDataContextSubPath => StaticLiterals.DataContextFolder;
 
-        public string WebApiProjectName => ProjectNames.First(e => e.EndsWith($"{WebApiPostfix}"));
+        public string WebApiProjectName => TemplateProjectNames.First(e => e.EndsWith($"{WebApiExtension}"));
         public string WebApiSubPath => WebApiProjectName;
         public string WebApiControllersSubPath => Path.Combine(WebApiSubPath, StaticLiterals.ControllersFolder);
 
-        public string AspMvcAppProjectName => ProjectNames.First(e => e.EndsWith($"{AspMvcPostfix}"));
+        public string AspMvcAppProjectName => TemplateProjectNames.First(e => e.EndsWith($"{AspMvcExtension}"));
         public string AspMvcAppSubPath => AspMvcAppProjectName;
         public string AspMvcControllersSubPath => Path.Combine(AspMvcAppSubPath, StaticLiterals.ControllersFolder);
 
-        public string MVVMAppProjectName => ProjectNames.First(e => e.EndsWith($"{MVVMPostfix}"));
+        public string MVVMAppProjectName => TemplateProjectNames.First(e => e.EndsWith($"{MVVMExtension}"));
         public string MVVMAppSubPath => MVVMAppProjectName;
 
-        public string ClientBlazorProjectName => ProjectNames.First(e => e.EndsWith($"{ClientBlazorPostfix}"));
+        public string ClientBlazorProjectName => TemplateProjectNames.First(e => e.EndsWith($"{ClientBlazorExtension}"));
         public string ClientBlazorSubPath => ClientBlazorProjectName;
 
-        public string AngularAppProjectName => ProjectNames.First(e => e.EndsWith($"{AngularPostfix}"));
+        public string AngularAppProjectName => TemplateProjectNames.First(e => e.EndsWith($"{AngularExtension}"));
         #endregion ProjectNames
 
         private SolutionProperties(string solutionPath)
@@ -71,6 +87,28 @@ namespace TemplateCodeGenerator.Logic.Generation
             LogicCSProjectFilePath = GetLogicCSProjectFilePath(solutionPath);
         }
 
+        public string GetProjectNameFromPath(string projectPath)
+        {
+            return projectPath.Replace(SolutionPath, string.Empty);
+        }
+        public string GetProjectNameFromFile(string filePath)
+        {
+            var result = string.Empty;
+            var data = filePath.Split(Path.DirectorySeparatorChar);
+            var idx = data.IndexOf(SolutionName);
+
+            if (idx + 1 < data.Length)
+            {
+                result = data[idx + 1];
+            }
+            return result;
+        }
+        public bool IsTemplateProjectFile(string filePath)
+        {
+            return TemplateProjectPaths.Any(tpp => filePath.StartsWith(tpp, StringComparison.CurrentCultureIgnoreCase));
+        }
+
+        #region factorey methods
         public static SolutionProperties Create()
         {
             return new SolutionProperties(GetCurrentSolutionPath());
@@ -86,6 +124,7 @@ namespace TemplateCodeGenerator.Logic.Generation
                 LogicAssemblyTypes = locigAssemblyTypes,
             };
         }
+        #endregion factory methods
 
         private static string GetCurrentSolutionPath()
         {

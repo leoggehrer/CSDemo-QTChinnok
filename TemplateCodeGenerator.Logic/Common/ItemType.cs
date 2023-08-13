@@ -14,17 +14,17 @@ namespace TemplateCodeGenerator.Logic.Common
         #region models and properties
         Property,
 
-        AccessModel,
         ModelProperty,
-
+        AccessModel,
         ServiceModel,
         ServiceModelProperty,
 
         EditModel,
         EditProperty,
 
-        FilterModel,
         FilterProperty,
+        AccessFilterModel,
+        ServiceFilterModel,
         #endregion models and properties
 
         DbContext,
@@ -51,6 +51,7 @@ namespace TemplateCodeGenerator.Logic.Common
         TypeScriptService,
 
         AllItems,
+        Lambda,
     }
 }
 //MdEnd

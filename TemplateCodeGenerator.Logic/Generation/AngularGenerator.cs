@@ -40,9 +40,7 @@ namespace TemplateCodeGenerator.Logic.Generation
         }
         private bool CanCreate(Type type)
         {
-#pragma warning disable IDE0075 // Simplify conditional expression
-            bool create = EntityProject.IsNotAGenerationEntity(type) ? false : true;
-#pragma warning restore IDE0075 // Simplify conditional expression
+            bool create = !EntityProject.IsNotAGenerationEntity(type);
 
             CanCreateModel(type, ref create);
             return create;
@@ -65,7 +63,8 @@ namespace TemplateCodeGenerator.Logic.Generation
 
             foreach (var type in entityProject.EnumTypes)
             {
-                if (CanCreate(type) && QuerySetting<bool>(Common.ItemType.TypeScriptEnum, type, StaticLiterals.Generate, GenerateEnums.ToString()))
+                if (CanCreate(type) 
+                    && QuerySetting<bool>(Common.ItemType.TypeScriptEnum, type, StaticLiterals.Generate, GenerateEnums.ToString()))
                 {
                     result.Add(CreateEnumFromType(type));
                 }
@@ -349,7 +348,7 @@ namespace TemplateCodeGenerator.Logic.Generation
 
                     if (typeName.Equals(entityName) == false)
                     {
-                        var subPath = GeneratorObject.CreateSubPathFromType(propertyInfo.PropertyType).ToLower();
+                        var subPath = ConvertFileItem(CreateSubPathFromType(propertyInfo.PropertyType));
 
                         result.Add(CreateImport("@app-core-enums", typeName, subPath));
                     }
@@ -365,7 +364,7 @@ namespace TemplateCodeGenerator.Logic.Generation
 
                         if (modelName.Equals(entityName) == false)
                         {
-                            var subPath = GeneratorObject.CreateSubPathFromType(modelType).ToLower();
+                            var subPath = ConvertFileItem(CreateSubPathFromType(modelType));
 
                             result.Add(CreateImport("@app-core-models", modelName, subPath));
                         }
@@ -381,7 +380,7 @@ namespace TemplateCodeGenerator.Logic.Generation
 
                         if (modelName.Equals(entityName) == false)
                         {
-                            var subPath = GeneratorObject.CreateSubPathFromType(modelType).ToLower();
+                            var subPath = ConvertFileItem(CreateSubPathFromType(modelType));
 
                             result.Add(CreateImport("@app-core-models", modelName, subPath));
                         }
@@ -466,7 +465,7 @@ namespace TemplateCodeGenerator.Logic.Generation
                 if (other != null && other != type)
                 {
                     var refTypeName = ItemProperties.CreateEntityName(other);
-                    var subPath = GeneratorObject.CreateSubPathFromType(other).ToLower();
+                    var subPath = ConvertFileItem(CreateSubPathFromType(other));
 
                     result.Add(CreateImport("@app-core-models", refTypeName, subPath));
                 }

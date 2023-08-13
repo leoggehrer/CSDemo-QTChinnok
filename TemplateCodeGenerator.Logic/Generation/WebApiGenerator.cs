@@ -2,6 +2,7 @@
 //MdStart
 namespace TemplateCodeGenerator.Logic.Generation
 {
+    using TemplateCodeGenerator.Logic.Common;
     using TemplateCodeGenerator.Logic.Contracts;
     internal sealed partial class WebApiGenerator : ModelGenerator
     {
@@ -44,7 +45,7 @@ namespace TemplateCodeGenerator.Logic.Generation
             return result;
         }
 
-        private IGeneratedItem CreateEditModelFromType(Type type, Common.UnitType unitType, Common.ItemType itemType)
+        private IGeneratedItem CreateEditModelFromType(Type type, UnitType unitType, ItemType itemType)
         {
             var modelName = ItemProperties.CreateEditModelName(type);
             var typeProperties = type.GetAllPropertyInfos();
@@ -58,7 +59,7 @@ namespace TemplateCodeGenerator.Logic.Generation
             };
 
             result.AddRange(CreateComment(type));
-            CreateModelAttributes(type, result.Source);
+            CreateModelAttributes(type, unitType, result.Source);
             result.Add($"public partial class {modelName}");
             result.Add("{");
             result.AddRange(CreatePartialStaticConstrutor(modelName));
@@ -67,7 +68,7 @@ namespace TemplateCodeGenerator.Logic.Generation
             foreach (var propertyInfo in filteredProperties.Where(pi => pi.CanWrite))
             {
                 result.AddRange(CreateComment(propertyInfo));
-                CreateModelPropertyAttributes(propertyInfo, result.Source);
+                CreateModelPropertyAttributes(propertyInfo, unitType, result.Source);
                 result.AddRange(CreateProperty(type, propertyInfo));
             }
             result.Add("}");
@@ -90,7 +91,7 @@ namespace TemplateCodeGenerator.Logic.Generation
             }
             return result;
         }
-        private IGeneratedItem CreateControllerFromType(Type type, Common.UnitType unitType, Common.ItemType itemType)
+        private IGeneratedItem CreateControllerFromType(Type type, UnitType unitType, ItemType itemType)
         {
             var visibility = "public";
             var logicProject = $"{ItemProperties.SolutionName}{StaticLiterals.LogicExtension}";
@@ -107,7 +108,7 @@ namespace TemplateCodeGenerator.Logic.Generation
                 SubFilePath = ItemProperties.CreateControllersSubPathFromType(type, string.Empty, StaticLiterals.CSharpFileExtension),
             };
             result.AddRange(CreateComment(type));
-            CreateControllerAttributes(type, result.Source);
+            CreateControllerAttributes(type, unitType, result.Source);
             result.Add($"{visibility} sealed partial class {controllerName} : {genericType}<{accessType}, {editModelType}, {modelType}>");
             result.Add("{");
             result.AddRange(CreatePartialStaticConstrutor(controllerName));
@@ -182,7 +183,7 @@ namespace TemplateCodeGenerator.Logic.Generation
         }
 
         #region query configuration
-        private T QuerySetting<T>(Common.ItemType itemType, Type type, string valueName, string defaultValue)
+        private T QuerySetting<T>(ItemType itemType, Type type, string valueName, string defaultValue)
         {
             T result;
 
@@ -197,7 +198,7 @@ namespace TemplateCodeGenerator.Logic.Generation
             }
             return result;
         }
-        private T QuerySetting<T>(Common.ItemType itemType, string itemName, string valueName, string defaultValue)
+        private T QuerySetting<T>(ItemType itemType, string itemName, string valueName, string defaultValue)
         {
             T result;
 
@@ -215,8 +216,8 @@ namespace TemplateCodeGenerator.Logic.Generation
         #endregion query configuration
 
         #region Partial methods
-        partial void CreateModelAttributes(Type type, List<string> source);
-        partial void CreateControllerAttributes(Type type, List<string> codeLines);
+        partial void CreateModelAttributes(Type type, UnitType unitType, List<string> source);
+        partial void CreateControllerAttributes(Type type, UnitType unitType, List<string> codeLines);
         #endregion Partial methods
     }
 }

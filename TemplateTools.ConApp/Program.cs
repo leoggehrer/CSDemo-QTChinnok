@@ -186,25 +186,25 @@ namespace TemplateTools.ConApp
 
             for (int i = 0; i < data.Length && result == string.Empty; i++)
             {
-                for (int j = 0; j < StaticLiterals.SolutionProjects.Length; j++)
+                for (int j = 0; j < StaticLiterals.TemplateProjects.Length; j++)
                 {
-                    if (data[i].Equals(StaticLiterals.SolutionProjects[j]))
+                    if (data[i].Equals(StaticLiterals.TemplateProjects[j]))
                     {
                         result = data[i];
                     }
                 }
-                for (int j = 0; j < StaticLiterals.SolutionToolProjects.Length; j++)
+                for (int j = 0; j < StaticLiterals.TemplateToolProjects.Length; j++)
                 {
-                    if (data[i].Equals(StaticLiterals.SolutionToolProjects[j]))
+                    if (data[i].Equals(StaticLiterals.TemplateToolProjects[j]))
                     {
                         result = data[i];
                     }
                 }
                 if (string.IsNullOrEmpty(result))
                 {
-                    for (int j = 0; j < StaticLiterals.ProjectExtensions.Length; j++)
+                    for (int j = 0; j < StaticLiterals.TemplateProjectExtensions.Length; j++)
                     {
-                        if (data[i].Equals($"{solutionName}{StaticLiterals.ProjectExtensions[j]}"))
+                        if (data[i].Equals($"{solutionName}{StaticLiterals.TemplateProjectExtensions[j]}"))
                         {
                             result = data[i];
                         }

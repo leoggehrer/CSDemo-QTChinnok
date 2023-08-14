@@ -21,6 +21,7 @@ namespace QTChinnok.Logic.Entities.App
         #region navigation properties
         public Album? Album { get; set; }
         public Genre? Genre { get; set; }
+        public MediaType? MediaType { get; set; }
         #endregion  navigation properties
     }
 }

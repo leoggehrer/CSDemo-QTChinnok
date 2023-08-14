@@ -30,7 +30,6 @@ namespace QTChinnok.Logic.Controllers.App
             {
                 query = query.Where(e => e.Artist!.Name!.ToUpper().Contains(artistName.ToUpper()));
             }
-
             return query.Select(e => new Models.App.Album(e)).ToArrayAsync();
         }
     }

@@ -8,10 +8,10 @@ using System.Windows.Input;
 
 namespace QTChinnok.WpfApp.ViewModels
 {
-    using TGenre = Models.Genre;
-    using TMediaType = Models.MediaType;
-    using TAlbum = Models.Album;
-    using TTrack = Models.Track;
+    using TGenre = Models.Base.Genre;
+    using TMediaType = Models.Base.MediaType;
+    using TAlbum = Models.App.Album;
+    using TTrack = Models.App.Track;
     using TMusicCollection = Models.MusicCollection;
     public partial class MainViewModel : BaseViewModel
     {
@@ -42,11 +42,11 @@ namespace QTChinnok.WpfApp.ViewModels
         private string trackFilter = string.Empty;
         private string musicCollectionFilter = string.Empty;
 
-        private List<TGenre> _genres = new();
-        private List<TMediaType> _mediaTypes = new();
-        private List<TAlbum> _albums = new();
-        private List<TTrack> _tracks = new();
-        private List<TMusicCollection> _musicCollections = new();
+        private readonly List<TGenre> _genres = new();
+        private readonly List<TMediaType> _mediaTypes = new();
+        private readonly List<TAlbum> _albums = new();
+        private readonly List<TTrack> _tracks = new();
+        private readonly List<TMusicCollection> _musicCollections = new();
         #endregion fields
 
         #region properties
@@ -394,7 +394,7 @@ namespace QTChinnok.WpfApp.ViewModels
             var result = items.Where(i => i.Name != null && i.Name.Contains(mediaTypeFilter, System.StringComparison.CurrentCultureIgnoreCase));
 
             _mediaTypes.Clear();
-            _mediaTypes.AddRange(result.Select(i => new TMediaType(i)));
+            _mediaTypes.AddRange(result.Select(i => TMediaType.Create(i)));
             SelectedMediaType = null;
             base.OnPropertyChanged(nameof(SelectedMediaType));
             base.OnPropertyChanged(nameof(MediaTypes));
@@ -406,7 +406,7 @@ namespace QTChinnok.WpfApp.ViewModels
             var result = items.Where(i => i.Name != null && i.Name.Contains(genreFilter, System.StringComparison.CurrentCultureIgnoreCase));
 
             _genres.Clear();
-            _genres.AddRange(result.Select(i => new TGenre(i)));
+            _genres.AddRange(result.Select(i => TGenre.Create(i)));
             SelectedGenre = null;
             base.OnPropertyChanged(nameof(SelectedGenre));
             base.OnPropertyChanged(nameof(Genres));
@@ -419,7 +419,7 @@ namespace QTChinnok.WpfApp.ViewModels
                                        || i.Artist!.Name!.Contains(albumFilter, System.StringComparison.CurrentCultureIgnoreCase));
 
             _albums.Clear();
-            _albums.AddRange(result.Select(i => new TAlbum(i)));
+            _albums.AddRange(result.Select(i => TAlbum.Create(i)));
             SelectedAlbum = null;
             base.OnPropertyChanged(nameof(SelectedAlbum));
             base.OnPropertyChanged(nameof(Albums));
@@ -432,7 +432,7 @@ namespace QTChinnok.WpfApp.ViewModels
                                        || (i.Composer != null && i.Composer.Contains(trackFilter, System.StringComparison.CurrentCultureIgnoreCase)));
 
             _tracks.Clear();
-            _tracks.AddRange(result.Select(i => new TTrack(i)));
+            _tracks.AddRange(result.Select(i => TTrack.Create(i)));
             SelectedTrack = null;
             base.OnPropertyChanged(nameof(SelectedTrack));
             base.OnPropertyChanged(nameof(Tracks));

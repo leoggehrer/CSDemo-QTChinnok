@@ -15,7 +15,7 @@ namespace QTChinnok.MvvMApp.ViewModels
         #region fields
         private string _modelFilter = string.Empty;
         private TModel? _selectedModel;
-        private List<TModel> _models = new();
+        private readonly List<TModel> _models = new();
         #endregion fields
 
         #region properties

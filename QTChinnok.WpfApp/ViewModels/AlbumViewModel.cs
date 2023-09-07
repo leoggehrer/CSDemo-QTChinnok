@@ -6,15 +6,15 @@ using System.Windows.Input;
 
 namespace QTChinnok.WpfApp.ViewModels
 {
-    using TAlbum = Models.Album;
-    using TArtist = Models.Artist;
+    using TAlbum = Models.App.Album;
+    using TArtist = Models.Base.Artist;
     public class AlbumViewModel : BaseViewModel
     {
         private ICommand? _cmdSave;
         private ICommand? _cmdClose;
 
         private TAlbum? _model;
-        private List<TArtist> _artists = new();
+        private readonly List<TArtist> _artists = new();
 
         public ICommand CommandSave => RelayCommand.Create(ref _cmdSave, p => Save());
         public ICommand CommandClose => RelayCommand.Create(ref _cmdClose, p => Close());
@@ -67,7 +67,7 @@ namespace QTChinnok.WpfApp.ViewModels
             var items = await ctrl.GetAllAsync().ConfigureAwait(false);
 
             _artists.Clear();
-            _artists.AddRange(items.OrderBy(i => i.Name).Select(i => new TArtist(i)).ToArray());
+            _artists.AddRange(items.OrderBy(i => i.Name).Select(i => TArtist.Create(i)).ToArray());
 
             base.OnPropertyChanged(nameof(ArtistList));
             base.OnPropertyChanged(nameof(ArtistId));

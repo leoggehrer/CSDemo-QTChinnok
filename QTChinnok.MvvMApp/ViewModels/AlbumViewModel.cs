@@ -13,7 +13,7 @@ namespace QTChinnok.MvvMApp.ViewModels
     public partial class AlbumViewModel : ModelViewModel<TAlbumModel, TAlbumEntity>
     {
         private TArtistModel? _selectedArtist;
-        private List<TArtistModel> _artists = new();
+        private readonly List<TArtistModel> _artists = new();
 
         public int ArtistId
         {

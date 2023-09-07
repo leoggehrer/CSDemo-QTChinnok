@@ -8,7 +8,7 @@ using System.Windows.Input;
 
 namespace QTChinnok.WpfApp.ViewModels
 {
-    using TAlbum = Models.Album;
+    using TAlbum = Models.App.Album;
     using TModel = Models.MusicCollection;
     public class MusicCollectionViewModel : BaseViewModel
     {
@@ -19,8 +19,8 @@ namespace QTChinnok.WpfApp.ViewModels
 
         private ICommand? _cmdAddAlbum;
         private ICommand? _cmdRemoveAlbum;
-        private List<TAlbum> _albums = new();
-        private List<TAlbum> _addAlbums = new();
+        private readonly List<TAlbum> _albums = new();
+        private readonly List<TAlbum> _addAlbums = new();
 
         private TAlbum? _selectedAlbum;
         private TAlbum? _selectedAddAlbum;
@@ -220,7 +220,7 @@ namespace QTChinnok.WpfApp.ViewModels
             var difIds = items.Select(e => e.Id).Except(_albums.Select(e => e.Id));
 
             _addAlbums.Clear();
-            _addAlbums.AddRange(items.Where(e => difIds.Contains(e.Id)).Select(e => new TAlbum(e)));
+            _addAlbums.AddRange(items.Where(e => difIds.Contains(e.Id)).Select(e => TAlbum.Create(e)));
 
             if (_addAlbums.Any())
             {

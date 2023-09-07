@@ -1,5 +1,4 @@
-﻿using QTChinnok.WpfApp.Models;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -7,19 +6,19 @@ using System.Windows.Input;
 
 namespace QTChinnok.WpfApp.ViewModels
 {
-    using TTrack = Models.Track;
-    using TGenre = Models.Genre;
-    using TAlbum = Models.Album;
-    using TMediaType = Models.MediaType;
+    using TTrack = Models.App.Track;
+    using TGenre = Models.Base.Genre;
+    using TAlbum = Models.App.Album;
+    using TMediaType = Models.Base.MediaType;
 
     public class TrackViewModel : BaseViewModel
     {
         private ICommand? _cmdSave;
         private ICommand? _cmdClose;
 
-        private List<Genre> _genres = new();
-        private List<Album> _albums = new();
-        private List<TMediaType> _mediaTypes = new();
+        private readonly List<TGenre> _genres = new();
+        private readonly List<TAlbum> _albums = new();
+        private readonly List<TMediaType> _mediaTypes = new();
 
         private TTrack? _model;
 
@@ -97,7 +96,7 @@ namespace QTChinnok.WpfApp.ViewModels
 
         public string Composer
         {
-            get => Model.Composer;
+            get => Model.Composer ?? string.Empty;
             set => Model.Composer = value;
         }
 
@@ -107,7 +106,7 @@ namespace QTChinnok.WpfApp.ViewModels
             var items = await ctrl.GetAllAsync().ConfigureAwait(false);
 
             _genres.Clear();
-            _genres.AddRange(items.OrderBy(e => e.Name).Select(e => new TGenre(e)));
+            _genres.AddRange(items.OrderBy(e => e.Name).Select(e => TGenre.Create(e)));
 
             if (GenreId == 0 && _genres.Any())
             {
@@ -123,7 +122,7 @@ namespace QTChinnok.WpfApp.ViewModels
             var items = await ctrl.GetAllAsync().ConfigureAwait(false);
 
             _albums.Clear();
-            _albums.AddRange(items.OrderBy(e => e.Title).Select(e => new TAlbum(e)));
+            _albums.AddRange(items.OrderBy(e => e.Title).Select(e => TAlbum.Create(e)));
 
             if (AlbumId == 0 && _albums.Any())
             {
@@ -139,7 +138,7 @@ namespace QTChinnok.WpfApp.ViewModels
             var items = await ctrl.GetAllAsync().ConfigureAwait(false);
 
             _mediaTypes.Clear();
-            _mediaTypes.AddRange(items.OrderBy(e => e.Name).Select(e => new TMediaType(e)));
+            _mediaTypes.AddRange(items.OrderBy(e => e.Name).Select(e => TMediaType.Create(e)));
 
             if (MediaTypeId == 0 && _mediaTypes.Any())
             {

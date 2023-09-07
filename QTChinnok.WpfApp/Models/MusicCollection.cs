@@ -15,7 +15,7 @@ namespace QTChinnok.WpfApp.Models
 
             foreach (var item in entity.Albums)
             {
-                Albums.Add(new Models.Album(item));
+                Albums.Add(Models.App.Album.Create(item));
                 if (AlbumText.Length > 0)
                 {
                     AlbumText += $", {item.Title}";
@@ -29,6 +29,6 @@ namespace QTChinnok.WpfApp.Models
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public string AlbumText { get; set; } = string.Empty;
-        public List<Album> Albums { get; set;} = new List<Album>();
+        public List<App.Album> Albums { get; set;} = new List<App.Album>();
     }
 }

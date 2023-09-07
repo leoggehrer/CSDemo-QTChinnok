@@ -3,7 +3,7 @@
     using System.Threading.Tasks;
     using System.Windows;
     using System.Windows.Input;
-    using TGenre = Models.Genre;
+    using TGenre = Models.Base.Genre;
 
     public class GenreViewModel : BaseViewModel
     {

@@ -1,12 +1,11 @@
 ﻿//@CodeCopy
 //MdStart
-using System;
 using System.Text;
 
 namespace TemplateCodeGenerator.Logic.Preprocessor
 {
-	public class RazorFile
-	{
+    public class RazorFile
+    {
         public static void SetPreprocessorDefineCommentsInRazorFiles(string path, params string[] defineItems)
         {
             foreach (var define in defineItems.Select(d => d.ToUpper()))

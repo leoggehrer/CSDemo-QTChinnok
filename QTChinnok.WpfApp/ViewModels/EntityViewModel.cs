@@ -2,11 +2,11 @@
 //MdStart
 namespace QTChinnok.WpfApp.ViewModels
 {
+    using CommonBase.Contracts;
     using System;
     using System.Threading.Tasks;
     using System.Windows;
     using System.Windows.Input;
-    using CommonBase.Contracts;
 
     public abstract partial class EntityViewModel<T> : BaseViewModel
         where T : IIdentifyable, new()

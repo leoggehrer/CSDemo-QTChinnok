@@ -17,7 +17,6 @@ namespace TemplateCodeGenerator.Logic.Generation
      *  - Facades
      */
     using System.Reflection;
-    using TemplateCodeGenerator.Logic.Common;
     using TemplateCodeGenerator.Logic.Contracts;
 
     internal sealed partial class LogicGenerator : ModelGenerator

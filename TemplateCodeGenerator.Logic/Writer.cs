@@ -421,7 +421,7 @@ namespace TemplateCodeGenerator.Logic
                     canCreate = false;
                 }
             }
-            else if (string.IsNullOrEmpty(sourcePath) == false 
+            else if (string.IsNullOrEmpty(sourcePath) == false
                      && Directory.Exists(sourcePath) == false)
             {
                 Directory.CreateDirectory(sourcePath);

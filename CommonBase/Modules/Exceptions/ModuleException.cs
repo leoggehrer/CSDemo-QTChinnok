@@ -46,7 +46,7 @@ namespace CommonBase.Modules.Exceptions
         /// Initializes a new instance of the LogicException class with a specified error message.
         /// </summary>
         /// <param name="message">The message that describes the error.</param>
-        public ModuleException(string? message) 
+        public ModuleException(string? message)
             : base(message)
         {
         }
@@ -56,7 +56,7 @@ namespace CommonBase.Modules.Exceptions
         /// </summary>
         /// <param name="message">The message that describes the error.</param>
         /// <param name="innerException">An instance of inner exception.</param>
-        public ModuleException(string? message, Exception? innerException) 
+        public ModuleException(string? message, Exception? innerException)
             : base(message, innerException)
         {
         }

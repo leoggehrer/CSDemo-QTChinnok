@@ -1,6 +1,5 @@
 ﻿//@CodeCopy
 //MdStart
-using CommonBase.Contracts;
 
 namespace CommonBase.Contracts
 {

@@ -1,7 +1,6 @@
 ﻿//@CodeCopy
 //MdStart
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 
 namespace CommonBase.Extensions
 {

@@ -63,7 +63,7 @@ namespace TemplateCodeGenerator.Logic.Generation
 
             foreach (var type in entityProject.EnumTypes)
             {
-                if (CanCreate(type) 
+                if (CanCreate(type)
                     && QuerySetting<bool>(Common.ItemType.TypeScriptEnum, type, StaticLiterals.Generate, GenerateEnums.ToString()))
                 {
                     result.Add(CreateEnumFromType(type));

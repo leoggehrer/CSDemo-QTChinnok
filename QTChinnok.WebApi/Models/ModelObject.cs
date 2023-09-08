@@ -1,7 +1,7 @@
 ﻿//@CodeCopy
 //MdStart
-using System.Collections;
 using CommonBase.Contracts;
+using System.Collections;
 
 namespace QTChinnok.WebApi.Models
 {

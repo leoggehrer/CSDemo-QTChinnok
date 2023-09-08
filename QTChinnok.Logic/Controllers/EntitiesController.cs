@@ -1,8 +1,8 @@
 ﻿//@CodeCopy
 //MdStart
+using CommonBase.Contracts;
 using System.Linq.Dynamic.Core;
 using System.Linq.Expressions;
-using CommonBase.Contracts;
 
 namespace QTChinnok.Logic.Controllers
 {

@@ -86,7 +86,6 @@ namespace TemplateTools.ConApp
                     }
                     else if (select == 2)
                     {
-                        var solutionPath = Program.GetCurrentSolutionPath();
                         var qtParentPaths = Program.GetQTChinnokParentPaths(Program.UserPath, SourcePath);
 
                         for (int i = 0; i < qtParentPaths.Length; i++)

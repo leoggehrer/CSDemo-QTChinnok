@@ -41,7 +41,7 @@ namespace CommonBase.Modules.Exceptions
         /// Initializes a new instance of the LogicException class with a specified error message.
         /// </summary>
         /// <param name="message">The message that describes the error.</param>
-        public RestApiException(string? message) 
+        public RestApiException(string? message)
             : base(message)
         {
         }
@@ -51,7 +51,7 @@ namespace CommonBase.Modules.Exceptions
         /// </summary>
         /// <param name="message">The message that describes the error.</param>
         /// <param name="innerException">An instance of inner exception.</param>
-        public RestApiException(string? message, Exception? innerException) 
+        public RestApiException(string? message, Exception? innerException)
             : base(message, innerException)
         {
         }

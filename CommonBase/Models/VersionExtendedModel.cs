@@ -49,6 +49,7 @@ namespace CommonBase.Models
             }
         }
 #endif
+
 #if ACCOUNT_ON && MODIFIEDBY_ON
         public IdType? IdentityId_ModifiedBy
         {

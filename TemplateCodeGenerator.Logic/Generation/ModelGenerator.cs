@@ -159,7 +159,6 @@ namespace TemplateCodeGenerator.Logic.Generation
                 if (CanCreate(propertyInfo)
                     && QuerySetting<bool>(unitType, ItemType.ModelProperty, type, StaticLiterals.Generate, "True"))
                 {
-                    result.AddRange(CreateComment(propertyInfo));
                     CreateModelPropertyAttributes(propertyInfo, unitType, result.Source);
                     result.AddRange(CreateProperty(type, propertyInfo));
                 }
@@ -224,8 +223,8 @@ namespace TemplateCodeGenerator.Logic.Generation
                     result.AddRange(CreateCopyProperties("public", type, copyType));
                 }
             }
-            else if (unitType == UnitType.ClientBlazor) 
-            { 
+            else if (unitType == UnitType.ClientBlazor)
+            {
             }
             else
             {
@@ -278,8 +277,8 @@ namespace TemplateCodeGenerator.Logic.Generation
             result.Add($"public partial class {modelName}");
             result.Add("{");
             result.AddRange(CreatePartialStaticConstrutor(modelName));
-            result.AddRange(CreatePartialConstrutor("public", modelName, initStatements: new string[] {$"_source = new {entitySubType}();"}));
-            result.AddRange(CreatePartialConstrutor("internal", modelName, argumentList: $"{entitySubType} source", initStatements: new string[] { $"_source = source;" },withPartials: false));
+            result.AddRange(CreatePartialConstrutor("public", modelName, initStatements: new string[] { $"_source = new {entitySubType}();" }));
+            result.AddRange(CreatePartialConstrutor("internal", modelName, argumentList: $"{entitySubType} source", initStatements: new string[] { $"_source = source;" }, withPartials: false));
 
             result.Add(string.Empty);
             result.Add($"new internal {entitySubType} Source");

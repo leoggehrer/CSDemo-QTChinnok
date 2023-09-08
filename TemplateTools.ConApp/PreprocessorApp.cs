@@ -1,7 +1,5 @@
 ﻿//@CodeCopy
 //MdStart
-using System;
-using System.Text;
 using CodeGenPreprocessor = TemplateCodeGenerator.Logic.Preprocessor;
 
 namespace TemplateTools.ConApp

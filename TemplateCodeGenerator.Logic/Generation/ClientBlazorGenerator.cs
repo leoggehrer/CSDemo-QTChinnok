@@ -1,6 +1,5 @@
 ﻿//@CodeCopy
 //MdStart
-using CommonBase.Models;
 using System.Reflection;
 using TemplateCodeGenerator.Logic.Contracts;
 

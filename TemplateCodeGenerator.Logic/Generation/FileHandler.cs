@@ -13,7 +13,7 @@ namespace TemplateCodeGenerator.Logic.Generation
         {
             var path = Path.GetDirectoryName(filePath);
             var customFileName = $"{Path.GetFileNameWithoutExtension(filePath)}{StaticLiterals.CustomFileExtension}";
-            
+
             return Path.Combine(path!, customFileName);
         }
 

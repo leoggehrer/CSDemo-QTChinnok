@@ -1,13 +1,11 @@
 ﻿//@CodeCopy
 //MdStart
-using System.Reflection;
-using System.Text.RegularExpressions;
 using TemplateCodeGenerator.Logic.Contracts;
 
 namespace TemplateCodeGenerator.Logic.Generation
 {
     internal sealed partial class MVVMGenerator : ModelGenerator
-	{
+    {
         #region fields
         private ItemProperties? _itemProperties;
         #endregion fields

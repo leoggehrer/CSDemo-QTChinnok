@@ -1,8 +1,8 @@
 ﻿//@CodeCopy
 //MdStart
+using CommonBase.Contracts;
 using System.Collections;
 using System.Linq;
-using CommonBase.Contracts;
 
 namespace QTChinnok.WpfApp.Models
 {

@@ -1,7 +1,6 @@
 ﻿//@CodeCopy
 //MdStart
 using Microsoft.AspNetCore.Mvc;
-using System.Text;
 
 namespace QTChinnok.WebApi.Controllers
 {

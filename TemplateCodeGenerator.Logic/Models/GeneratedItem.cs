@@ -54,8 +54,8 @@ namespace TemplateCodeGenerator.Logic.Models
             foreach (var line in Source.Eject())
             {
                 var formatLine = line.Trim();
-                var hasOpenBlock = formatLine.Contains("{");
-                var hasCloseBlock = formatLine.Contains("}");
+                var hasOpenBlock = formatLine.Contains('{');
+                var hasCloseBlock = formatLine.Contains('}');
 
                 if (hasOpenBlock && hasCloseBlock)
                 {

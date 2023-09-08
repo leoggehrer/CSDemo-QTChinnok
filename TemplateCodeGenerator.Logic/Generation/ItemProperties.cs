@@ -27,7 +27,7 @@ namespace TemplateCodeGenerator.Logic.Generation
         /// </summary>
         /// <param name="type">The property info object.</param>
         /// <returns>The typescript property name.</returns>
-        public static string CreateTSPropertyName (PropertyInfo propertyInfo) => $"{Char.ToLower(propertyInfo.Name[0])}{propertyInfo.Name[1..]}";
+        public static string CreateTSPropertyName(PropertyInfo propertyInfo) => $"{Char.ToLower(propertyInfo.Name[0])}{propertyInfo.Name[1..]}";
 
         #region Solution properties
         public string[] TemplateProjects

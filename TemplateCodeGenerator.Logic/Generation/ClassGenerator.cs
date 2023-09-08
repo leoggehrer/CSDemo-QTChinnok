@@ -236,6 +236,7 @@ namespace TemplateCodeGenerator.Logic.Generation
             {
                 property += "{ get; set; }" + $" = {defaultValue};";
             }
+            result.AddRange(CreateComment(propertyInfo));
             result.Add(property);
             return result;
         }
@@ -356,6 +357,7 @@ namespace TemplateCodeGenerator.Logic.Generation
             var propertyType = GetPropertyType(propertyInfo);
 
             result.Add(string.Empty);
+            result.AddRange(CreateComment(propertyInfo));
             CreatePropertyAttributes(propertyInfo, result);
             result.Add($"public {propertyType} {propertyInfo.Name}");
             result.Add("{");

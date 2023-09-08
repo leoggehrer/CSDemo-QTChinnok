@@ -31,6 +31,8 @@ namespace CommonBase.Modules.Exceptions
         public static int AccessRuleViolationCanNotDeleted = 190;
 #endif
 #endif
+
+#pragma warning disable CA2211 // Non-constant fields should not be visible
         public static int InvalidId = 200;
         public static int InvalidPageSize = 210;
 
@@ -47,6 +49,7 @@ namespace CommonBase.Modules.Exceptions
         public static int InvalidOperation = 290;
         public static int EmailWasNotSent = 300;
         public static int InvalidConfirmation = 310;
+#pragma warning restore CA2211 // Non-constant fields should not be visible
     }
 }
 //MdEnd

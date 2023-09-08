@@ -1,9 +1,6 @@
 ﻿//@CodeCopy
 //MdStart
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Reflection;
 
 namespace CommonBase.Extensions
@@ -54,7 +51,7 @@ namespace CommonBase.Extensions
                        typeof(DateTimeOffset),
                        typeof(TimeSpan),
                        typeof(Guid)
-                   }.Contains(checkType) || 
+                   }.Contains(checkType) ||
                    (Convert.GetTypeCode(checkType) != TypeCode.Object);
         }
 

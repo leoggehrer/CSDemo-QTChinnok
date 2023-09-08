@@ -137,6 +137,8 @@ namespace TemplateTooles.ConApp
                     System.Diagnostics.Debug.WriteLine($",\"{ext}\"");
                 }
 
+                TemplateCodeGenerator.Logic.Generator.DeleteGeneratedFiles(targetDirectory);
+
                 if (result)
                 {
                     Logger("Finished!");
@@ -482,7 +484,7 @@ namespace TemplateTooles.ConApp
             var sourceSolutionFolder = new DirectoryInfo(sourceSolutionDirectory).Name;
             var targetSolutionFolder = new DirectoryInfo(targetSolutionDirectory).Name;
             var subSourceFilePath = sourceFilePath.Replace(sourceSolutionDirectory, string.Empty);
-            
+
             foreach (var item in subSourceFilePath.Split(Path.DirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries))
             {
                 if (string.IsNullOrEmpty(item) == false)

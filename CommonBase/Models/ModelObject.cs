@@ -2,9 +2,9 @@
 //MdStart
 namespace CommonBase.Models
 {
-    using System.Collections;
     using CommonBase.Contracts;
     using CommonBase.Extensions;
+    using System.Collections;
 
     public abstract partial class ModelObject : IIdentifyable
     {

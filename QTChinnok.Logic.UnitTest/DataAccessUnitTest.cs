@@ -1,9 +1,9 @@
 ﻿//@CodeCopy
 //MdStart
+using CommonBase.Contracts;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using CommonBase.Contracts;
 
 namespace QTChinnok.Logic.UnitTest
 {
@@ -13,10 +13,10 @@ namespace QTChinnok.Logic.UnitTest
     /// <typeparam name="TAccessModel">The generic parameter of the model.</typeparam>
     public abstract class DataAccessUnitTest<TAccessModel> where TAccessModel : IIdentifyable, new()
     {
-        protected static int Counter = 0;
+        protected static int Counter { get; set; } = 0;
         public abstract IDataAccess<TAccessModel> CreateDataAccess();
 
-        public List<string> IgnoreUpdateProperties = new() 
+        public List<string> IgnoreUpdateProperties = new()
         {
             nameof(IIdentifyable.Id),
 #if ROWVERSION_ON

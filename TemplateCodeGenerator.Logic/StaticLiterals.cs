@@ -78,6 +78,8 @@ namespace TemplateCodeGenerator.Logic
         #region Settings
         public static string TProperty => nameof(TProperty);
         public static string Generate => nameof(Generate);
+        public static string GetAccessor => nameof(GetAccessor);
+        public static string SetAccessor => nameof(SetAccessor);
         public static string Visibility => nameof(Visibility);
         public static string Attributes => nameof(Attributes);
         public static string ControllerGenericType => nameof(ControllerGenericType);

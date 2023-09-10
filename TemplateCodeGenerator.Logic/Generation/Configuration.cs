@@ -104,8 +104,8 @@ namespace TemplateCodeGenerator.Logic.Generation
         public string QuerySettingValue(UnitType unitType, ItemType itemType, string itemName, string valueName, string defaultValue)
         {
             var result = defaultValue;
-            var generationSetting = GenerationSettings.FirstOrDefault(e => e.UnitType == unitType.ToString()
-                                                                        && e.ItemType == itemType.ToString()
+            var generationSetting = GenerationSettings.FirstOrDefault(e => e.UnitType.Equals(unitType.ToString(), StringComparison.CurrentCultureIgnoreCase)
+                                                                        && e.ItemType.Equals(itemType.ToString(), StringComparison.CurrentCultureIgnoreCase)
                                                                         && itemName.EndsWith(e.ItemName)
                                                                         && e.Name.Equals(valueName, StringComparison.CurrentCultureIgnoreCase));
 
@@ -118,8 +118,7 @@ namespace TemplateCodeGenerator.Logic.Generation
         public string QuerySettingValue(string unitType, string itemType, string itemName, string valueName, string defaultValue)
         {
             var result = defaultValue;
-            var generationSetting = GenerationSettings.FirstOrDefault(e => e.UnitType == unitType
-                                                                        && e.ItemType == itemType
+            var generationSetting = GenerationSettings.FirstOrDefault(e => e.UnitType.Equals(unitType, StringComparison.CurrentCultureIgnoreCase)                                                                       && e.ItemType == itemType
                                                                         && itemName.EndsWith(e.ItemName)
                                                                         && e.Name.Equals(valueName, StringComparison.CurrentCultureIgnoreCase));
 

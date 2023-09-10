@@ -287,7 +287,8 @@ namespace TemplateCodeGenerator.Logic.Generation
             result.Add("set => _source = value;");
             result.Add("}");
 
-            foreach (var modelItem in generateProperties)
+            foreach (var modelItem in generateProperties.Where(pi => ItemProperties.IsEntityType(pi.PropertyType) == false
+                                                                  && ItemProperties.IsEntityListType(pi.PropertyType) == false))
             {
                 if (QuerySetting<bool>(unitType, ItemType.ModelProperty, modelItem.DeclaringName(), StaticLiterals.Generate, "True"))
                 {
@@ -313,6 +314,41 @@ namespace TemplateCodeGenerator.Logic.Generation
             result.AddRange(CreateEquals(type, modelSubType));
             result.AddRange(CreateGetHashCode(type));
             result.AddRange(CreateDelegateFactoryMethods(modelType, entitySubType, type.IsPublic, false));
+            result.Add("}");
+            result.EnvelopeWithANamespace(ItemProperties.CreateModelNamespace(type));
+            result.FormatCSharpCode();
+            return result;
+        }
+        protected virtual IGeneratedItem CreateDelegateModelNavigationsFromType(Type type, UnitType unitType, ItemType itemType)
+        {
+            var modelName = CreateModelName(type);
+            var modelType = ItemProperties.CreateModelType(type);
+            var modelSubType = ItemProperties.CreateModelSubType(type);
+            var entitySubType = ItemProperties.CreateSolutionTypeSubName(type);
+            var typeProperties = type.GetAllPropertyInfos();
+            var generateProperties = typeProperties.Where(e => StaticLiterals.NoGenerationProperties.Any(p => p.Equals(e.Name)) == false) ?? Array.Empty<PropertyInfo>();
+            var result = new Models.GeneratedItem(unitType, itemType)
+            {
+                FullName = CreateModelFullName(type),
+                FileExtension = StaticLiterals.CSharpFileExtension,
+                SubFilePath = ItemProperties.CreateModelSubPath(type, "Navigation", StaticLiterals.CSharpFileExtension),
+            };
+
+            result.AddRange(CreateComment(type));
+            CreateModelAttributes(type, result.Source);
+            result.Add($"partial class {modelName}");
+            result.Add("{");
+
+            foreach (var modelItem in generateProperties.Where(pi => ItemProperties.IsEntityType(pi.PropertyType) 
+                                                                  || ItemProperties.IsEntityListType(pi.PropertyType)))
+            {
+                if (QuerySetting<bool>(unitType, ItemType.ModelProperty, modelItem.DeclaringName(), StaticLiterals.Generate, "True"))
+                {
+                    CreateModelPropertyAttributes(modelItem, unitType, result.Source);
+                    result.AddRange(CreateDelegateProperty(modelItem, "Source", modelItem));
+                }
+            }
+
             result.Add("}");
             result.EnvelopeWithANamespace(ItemProperties.CreateModelNamespace(type));
             result.FormatCSharpCode();

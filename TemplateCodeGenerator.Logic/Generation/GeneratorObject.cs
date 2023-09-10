@@ -52,7 +52,8 @@ namespace TemplateCodeGenerator.Logic.Generation
         }
         public static bool IsListType(Type type)
         {
-            return type.FullName!.StartsWith("System.Collections.Generic.List");
+            return type.FullName!.StartsWith("System.Collections.Generic.List")
+                || type.FullName!.StartsWith("System.Collections.Generic.IList");
         }
 
         /// <summary>

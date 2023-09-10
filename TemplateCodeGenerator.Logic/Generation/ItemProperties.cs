@@ -97,6 +97,10 @@ namespace TemplateCodeGenerator.Logic.Generation
         }
 
         #region Contracts properties
+        public string CreateModelContractType(Type type)
+        {
+            return $"{CreateLogicContractNamespace(type)}.{CreateModelContractName(type)}";
+        }
         public string CreateAccessContractType(Type type)
         {
             return $"{CreateLogicContractNamespace(type)}.{CreateAccessContractName(type)}";
@@ -104,6 +108,14 @@ namespace TemplateCodeGenerator.Logic.Generation
         public string CreateServiceContractType(Type type)
         {
             return $"{CreateLogicContractNamespace(type)}.{CreateServiceContractName(type)}";
+        }
+        public static string CreateModelContractName(Type type)
+        {
+            return $"I{type.Name}";
+        }
+        public static string CreateModelNavigationContractName(Type type)
+        {
+            return $"I{type.Name}Navigation";
         }
         public static string CreateAccessContractName(Type type)
         {
@@ -132,6 +144,10 @@ namespace TemplateCodeGenerator.Logic.Generation
         public string CreateClientBlazorContractNamespace(Type type)
         {
             return $"{SolutionName}{StaticLiterals.ClientBlazorExtension}.{CreateContractSubNamespace(type)}";
+        }
+        public string CreateModelContractSubPathFromType(Type type, string postFix, string fileExtension)
+        {
+            return Path.Combine(CreateContractSubNamespace(type).Replace(".", Path.DirectorySeparatorChar.ToString()), $"{CreateModelContractName(type)}{postFix}{fileExtension}");
         }
         public string CreateAccessContractSubPathFromType(Type type, string postFix, string fileExtension)
         {
@@ -273,6 +289,18 @@ namespace TemplateCodeGenerator.Logic.Generation
         public static bool IsEntityType(Type type)
         {
             return type.GetBaseTypes().FirstOrDefault(t => t.Name.Equals(StaticLiterals.EntityObjectName)) != null;
+        }
+        public static bool IsEntityListType(Type type)
+        {
+            var result = false;
+
+            if (type.IsGenericType && GeneratorObject.IsListType(type))
+            {
+                var genericType = type.GetGenericArguments()[0];
+
+                result = IsEntityType(genericType);
+            }
+            return result;
         }
         public static bool IsModelType(Type type)
         {

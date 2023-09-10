@@ -17,6 +17,7 @@ namespace TemplateCodeGenerator.Logic.Generation
      *  - Facades
      */
     using System.Reflection;
+    using TemplateCodeGenerator.Logic.Common;
     using TemplateCodeGenerator.Logic.Contracts;
 
     internal sealed partial class LogicGenerator : ModelGenerator
@@ -31,6 +32,7 @@ namespace TemplateCodeGenerator.Logic.Generation
         public bool GenerateDbContext { get; set; }
         public bool GenerateAllAccessModels { get; set; }
 
+        public bool GenerateAllModelContracts { get; set; }
         public bool GenerateAllAccessContracts { get; set; }
         public bool GenerateAllControllers { get; set; }
 
@@ -44,19 +46,21 @@ namespace TemplateCodeGenerator.Logic.Generation
         #region constructors
         public LogicGenerator(ISolutionProperties solutionProperties) : base(solutionProperties)
         {
-            var generateAll = QuerySetting<string>(Common.ItemType.AllItems, StaticLiterals.AllItems, StaticLiterals.Generate, "True");
+            var generateAll = QuerySetting<string>(ItemType.AllItems, StaticLiterals.AllItems, StaticLiterals.Generate, "True");
 
-            GenerateDbContext = QuerySetting<bool>(Common.ItemType.DbContext, "All", StaticLiterals.Generate, generateAll);
-            GenerateAllAccessModels = QuerySetting<bool>(Common.ItemType.AccessModel, "All", StaticLiterals.Generate, generateAll);
+            GenerateDbContext = QuerySetting<bool>(ItemType.DbContext, "All", StaticLiterals.Generate, generateAll);
+            GenerateAllAccessModels = QuerySetting<bool>(ItemType.AccessModel, "All", StaticLiterals.Generate, generateAll);
 
-            GenerateAllAccessContracts = QuerySetting<bool>(Common.ItemType.ServiceAccessContract, "All", StaticLiterals.Generate, generateAll);
-            GenerateAllControllers = QuerySetting<bool>(Common.ItemType.Controller, "All", StaticLiterals.Generate, generateAll);
+            GenerateAllModelContracts = QuerySetting<bool>(ItemType.ModelContract, "All", StaticLiterals.Generate, generateAll);
 
-            GenerateAllServiceContracts = QuerySetting<bool>(Common.ItemType.ServiceContract, "All", StaticLiterals.Generate, generateAll);
-            GenerateAllServices = QuerySetting<bool>(Common.ItemType.Service, "All", StaticLiterals.Generate, generateAll);
-            BaseAddress = QuerySetting<string>(Common.ItemType.Service, "All", nameof(BaseAddress), "https://localhost:7085/api");
+            GenerateAllAccessContracts = QuerySetting<bool>(ItemType.ServiceAccessContract, "All", StaticLiterals.Generate, generateAll);
+            GenerateAllControllers = QuerySetting<bool>(ItemType.Controller, "All", StaticLiterals.Generate, generateAll);
 
-            GenerateAllFacades = QuerySetting<bool>(Common.ItemType.Facade, "All", StaticLiterals.Generate, generateAll);
+            GenerateAllServiceContracts = QuerySetting<bool>(ItemType.ServiceContract, "All", StaticLiterals.Generate, generateAll);
+            GenerateAllServices = QuerySetting<bool>(ItemType.Service, "All", StaticLiterals.Generate, generateAll);
+            BaseAddress = QuerySetting<string>(ItemType.Service, "All", nameof(BaseAddress), "https://localhost:7085/api");
+
+            GenerateAllFacades = QuerySetting<bool>(ItemType.Facade, "All", StaticLiterals.Generate, generateAll);
         }
         #endregion constructors
 
@@ -79,6 +83,7 @@ namespace TemplateCodeGenerator.Logic.Generation
                 result.Add($"get => {fieldName};");
                 result.Add($"set => {fieldName} = value;");
                 result.Add("}");
+                result.AddRange(CreateComment(propertyInfo));
                 CreatePropertyAttributes(propertyInfo, result);
                 result.Add($"public System.Collections.Generic.IList<{modelType}> {propertyInfo.Name}");
                 result.Add("{");
@@ -87,10 +92,8 @@ namespace TemplateCodeGenerator.Logic.Generation
             }
             else
             {
-                result.AddRange(base.CreateDelegateAutoProperty(propertyInfo, delegateObjectName,
-                    delegatePropertyInfo));
+                result.AddRange(base.CreateDelegateAutoProperty(propertyInfo, delegateObjectName, delegatePropertyInfo));
             }
-
             return result;
         }
         public override IEnumerable<string> CreateDelegateAutoGet(PropertyInfo propertyInfo, string delegateObjectName, PropertyInfo delegatePropertyInfo)
@@ -104,30 +107,25 @@ namespace TemplateCodeGenerator.Logic.Generation
             {
                 if (IsArrayType(propertyInfo.PropertyType))
                 {
-                    var modelType =
-                        ItemProperties.ConvertEntityToModelType(propertyInfo.PropertyType.GetElementType()!.FullName!);
+                    var modelType = ItemProperties.ConvertEntityToModelType(propertyInfo.PropertyType.GetElementType()!.FullName!);
 
                     result.Add($"{visibility}get => {delegateProperty}.Select(e => {modelType}.Create(e)).ToArray();");
                 }
                 else if (IsListType(propertyInfo.PropertyType))
                 {
-                    var modelType =
-                        ItemProperties.ConvertEntityToModelType(propertyInfo.PropertyType.GenericTypeArguments[0]
-                            .FullName!);
+                    var modelType = ItemProperties.ConvertEntityToModelType(propertyInfo.PropertyType.GenericTypeArguments[0].FullName!);
 
                     result.Add($"{visibility}get => {delegateProperty}.Select(e => {modelType}.Create(e)).ToList();");
                 }
                 else
                 {
-                    result.Add(
-                        $"{visibility}get => {delegateProperty} != null ? {propertyType.Replace("?", string.Empty)}.Create({delegateProperty}) : null;");
+                    result.Add($"{visibility}get => {delegateProperty} != null ? {propertyType.Replace("?", string.Empty)}.Create({delegateProperty}) : null;");
                 }
             }
             else
             {
                 result.Add($"{visibility}get => {delegateObjectName}.{delegatePropertyInfo.Name};");
             }
-
             return result;
         }
         public override IEnumerable<string> CreateDelegateAutoSet(PropertyInfo propertyInfo, string delegateObjectName, PropertyInfo delegatePropertyInfo)
@@ -141,8 +139,7 @@ namespace TemplateCodeGenerator.Logic.Generation
             {
                 if (IsArrayType(propertyInfo.PropertyType))
                 {
-                    result.Add(
-                        $"{visibility}set => {delegateProperty} = value.Select(e => e.{delegateObjectName}).ToArray();");
+                    result.Add($"{visibility}set => {delegateProperty} = value.Select(e => e.{delegateObjectName}).ToArray();");
                 }
                 else if (IsListType(propertyInfo.PropertyType))
                 {
@@ -168,8 +165,10 @@ namespace TemplateCodeGenerator.Logic.Generation
             {
                 CreateDbContext()
             };
+
             result.AddRange(CreateAccessModels());
-            result.AddRange(CreateContracts());
+            result.AddRange(CreateModelContracts());
+            result.AddRange(CreateAccessContracts());
             result.AddRange(CreateControllers());
             result.AddRange(CreateServices());
             result.AddRange(CreateFacades());
@@ -190,7 +189,7 @@ namespace TemplateCodeGenerator.Logic.Generation
         {
             var entityProject = EntityProject.Create(SolutionProperties);
             var dataContextNamespace = $"{ItemProperties.Namespace}.DataContext";
-            var result = new Models.GeneratedItem(Common.UnitType.Logic, Common.ItemType.DbContext)
+            var result = new Models.GeneratedItem(UnitType.Logic, ItemType.DbContext)
             {
                 FullName = $"{dataContextNamespace}.ProjectDbContext",
                 FileExtension = StaticLiterals.CSharpFileExtension,
@@ -204,7 +203,7 @@ namespace TemplateCodeGenerator.Logic.Generation
             {
                 var defaultValue = (GenerateDbContext && GetGenerateDefault(type)).ToString();
 
-                if (QuerySetting<bool>(Common.ItemType.DbContext, type, StaticLiterals.Generate, defaultValue))
+                if (QuerySetting<bool>(ItemType.DbContext, type, StaticLiterals.Generate, defaultValue))
                 {
                     var entityType = ItemProperties.CreateSolutionTypeSubName(type);
 
@@ -224,7 +223,7 @@ namespace TemplateCodeGenerator.Logic.Generation
             {
                 var defaultValue = (GenerateDbContext && GetGenerateDefault(type)).ToString();
 
-                if (QuerySetting<bool>(Common.ItemType.DbContext, type, StaticLiterals.Generate, defaultValue))
+                if (QuerySetting<bool>(ItemType.DbContext, type, StaticLiterals.Generate, defaultValue))
                 {
                     var entityType = ItemProperties.CreateSolutionTypeSubName(type);
 
@@ -254,16 +253,125 @@ namespace TemplateCodeGenerator.Logic.Generation
                 var defaultValue = (GenerateAllAccessModels && GetGenerateDefault(type)).ToString();
 
                 if (CanCreate(type)
-                    && QuerySetting<bool>(Common.ItemType.AccessModel, type, StaticLiterals.Generate, defaultValue))
+                    && QuerySetting<bool>(ItemType.AccessModel, type, StaticLiterals.Generate, defaultValue))
                 {
-                    result.Add(CreateDelegateModelFromType(type, Common.UnitType.Logic, Common.ItemType.AccessModel));
-                    result.Add(CreateModelInheritance(type, Common.UnitType.Logic, Common.ItemType.AccessModel));
+                    result.Add(CreateDelegateModelFromType(type, UnitType.Logic, ItemType.AccessModel));
+                    result.Add(CreateDelegateModelNavigationsFromType(type, UnitType.Logic, ItemType.AccessModel));
+                    result.Add(CreateModelInheritance(type, UnitType.Logic, ItemType.AccessModel));
                 }
             }
             return result;
         }
 
-        private IEnumerable<IGeneratedItem> CreateContracts()
+        private IEnumerable<IGeneratedItem> CreateModelContracts()
+        {
+            var result = new List<IGeneratedItem>();
+            var entityProject = EntityProject.Create(SolutionProperties);
+
+            foreach (var type in entityProject.EntityTypes)
+            {
+                var defaultValue = (GenerateAllModelContracts && GetGenerateDefault(type)).ToString();
+
+                if (CanCreate(type)
+                    && QuerySetting<bool>(ItemType.ModelContract, type, StaticLiterals.Generate, defaultValue))
+                {
+                    result.Add(CreateModelContract(type, UnitType.Logic, ItemType.ModelContract));
+                    result.Add(CreateModelNavigationsContract(type, UnitType.Logic, ItemType.ModelContract));
+                }
+            }
+            return result;
+        }
+        private IGeneratedItem CreateModelContract(Type type, UnitType unitType, ItemType itemType)
+        {
+            var contractName = ItemProperties.CreateModelContractName(type);
+            var typeProperties = type.GetAllPropertyInfos();
+            var generateProperties = typeProperties.Where(e => StaticLiterals.NoGenerationProperties.Any(p => p.Equals(e.Name)) == false) ?? Array.Empty<PropertyInfo>();
+            var result = new Models.GeneratedItem(unitType, itemType)
+            {
+                FullName = ItemProperties.CreateModelContractName(type),
+                FileExtension = StaticLiterals.CSharpFileExtension,
+                SubFilePath = ItemProperties.CreateModelContractSubPathFromType(type, string.Empty, StaticLiterals.CSharpFileExtension),
+            };
+            result.AddRange(CreateComment(type));
+            result.Add($"public partial interface {contractName}");
+            result.Add("{");
+            foreach (var propertyItem in generateProperties.Where(pi => ItemProperties.IsEntityType(pi.PropertyType) == false
+                                                                     && ItemProperties.IsEntityListType(pi.PropertyType) == false))
+            {
+                if (QuerySetting<bool>(unitType, ItemType.InterfaceProperty, propertyItem.DeclaringName(), StaticLiterals.Generate, "True"))
+                {
+                    var getAccessor = string.Empty;
+                    var setAccessor = string.Empty;
+                    var propertyType = GetPropertyType(propertyItem);
+
+                    if (QuerySetting<bool>(unitType, ItemType.InterfaceProperty, propertyItem.DeclaringName(), StaticLiterals.GetAccessor, "True"))
+                    {
+                        getAccessor = "get;";
+                    }
+                    if (QuerySetting<bool>(unitType, ItemType.InterfaceProperty, propertyItem.DeclaringName(), StaticLiterals.SetAccessor, "True"))
+                    {
+                        setAccessor = "set;";
+                    }
+                    result.Add($"{propertyType} {propertyItem.Name}" + " { " + $"{getAccessor} {setAccessor}" + " } ");
+                }
+            }
+            result.Add("}");
+            result.EnvelopeWithANamespace(ItemProperties.CreateLogicContractNamespace(type));
+            result.FormatCSharpCode();
+            return result;
+        }
+        private IGeneratedItem CreateModelNavigationsContract(Type type, UnitType unitType, ItemType itemType)
+        {
+            var contractPostfix = "Navigation";
+            var contractName = ItemProperties.CreateModelNavigationContractName(type);
+            var typeProperties = type.GetAllPropertyInfos();
+            var generateProperties = typeProperties.Where(e => StaticLiterals.NoGenerationProperties.Any(p => p.Equals(e.Name)) == false) ?? Array.Empty<PropertyInfo>();
+            var result = new Models.GeneratedItem(unitType, itemType)
+            {
+                FullName = ItemProperties.CreateModelNavigationContractName(type),
+                FileExtension = StaticLiterals.CSharpFileExtension,
+                SubFilePath = ItemProperties.CreateModelContractSubPathFromType(type, contractPostfix, StaticLiterals.CSharpFileExtension),
+            };
+            result.AddRange(CreateComment(type));
+            result.Add($"public partial interface {contractName}");
+            result.Add("{");
+            foreach (var propertyItem in generateProperties.Where(pi => ItemProperties.IsEntityType(pi.PropertyType)
+                                                                     || ItemProperties.IsEntityListType(pi.PropertyType)))
+            {
+                if (QuerySetting<bool>(unitType, ItemType.InterfaceProperty, propertyItem.DeclaringName(), StaticLiterals.Generate, "True"))
+                {
+                    var propertyType = GetPropertyType(propertyItem);
+
+                    if (ItemProperties.IsModelType(propertyType))
+                    {
+                        if (IsArrayType(propertyItem.PropertyType))
+                        {
+                            var modelType = ItemProperties.ConvertEntityToModelType(propertyItem.PropertyType.GetElementType()!.FullName!);
+
+                            result.Add($"{modelType}[] {propertyItem.Name}" + " { get; }");
+                        }
+                        else if (IsListType(propertyItem.PropertyType))
+                        {
+                            var modelType = ItemProperties.ConvertEntityToModelType(propertyItem.PropertyType.GenericTypeArguments[0].FullName!);
+
+                            result.Add($"System.Collections.Generic.IList<{modelType}> {propertyItem.Name}" + " { get; }");
+                        }
+                        else
+                        {
+                            var modelType = ItemProperties.ConvertEntityToModelType(type.FullName!);
+
+                            result.Add($"{modelType} {propertyItem.Name}" + " { get; }");
+                        }
+                    }
+                }
+            }
+            result.Add("}");
+            result.EnvelopeWithANamespace(ItemProperties.CreateLogicContractNamespace(type));
+            result.FormatCSharpCode();
+            return result;
+        }
+
+        private IEnumerable<IGeneratedItem> CreateAccessContracts()
         {
             var result = new List<IGeneratedItem>();
             var entityProject = EntityProject.Create(SolutionProperties);
@@ -273,9 +381,9 @@ namespace TemplateCodeGenerator.Logic.Generation
                 var defaultValue = (GenerateAllAccessContracts && GetGenerateDefault(type)).ToString();
 
                 if (CanCreate(type)
-                    && QuerySetting<bool>(Common.ItemType.AccessContract, type, StaticLiterals.Generate, defaultValue))
+                    && QuerySetting<bool>(ItemType.AccessContract, type, StaticLiterals.Generate, defaultValue))
                 {
-                    result.Add(CreateAccessContract(type, Common.UnitType.Logic, Common.ItemType.AccessContract));
+                    result.Add(CreateAccessContract(type, UnitType.Logic, ItemType.AccessContract));
                 }
             }
 
@@ -284,9 +392,9 @@ namespace TemplateCodeGenerator.Logic.Generation
                 var defaultValue = (GenerateAllServiceContracts && GetGenerateDefault(type)).ToString();
 
                 if (CanCreate(type)
-                    && QuerySetting<bool>(Common.ItemType.ServiceContract, type, StaticLiterals.Generate, defaultValue))
+                    && QuerySetting<bool>(ItemType.ServiceContract, type, StaticLiterals.Generate, defaultValue))
                 {
-                    result.Add(CreateServiceContract(type, Common.UnitType.Logic, Common.ItemType.ServiceContract));
+                    result.Add(CreateServiceContract(type, UnitType.Logic, ItemType.ServiceContract));
                 }
             }
             return result;
@@ -340,9 +448,9 @@ namespace TemplateCodeGenerator.Logic.Generation
                 var defaultValue = (GenerateAllAccessContracts && GenerateAllControllers && GetGenerateDefault(type)).ToString();
 
                 if (CanCreate(type)
-                    && QuerySetting<bool>(Common.ItemType.Controller, type, StaticLiterals.Generate, defaultValue))
+                    && QuerySetting<bool>(ItemType.Controller, type, StaticLiterals.Generate, defaultValue))
                 {
-                    result.Add(CreateControllerFromType(type, Common.UnitType.Logic, Common.ItemType.Controller));
+                    result.Add(CreateControllerFromType(type, UnitType.Logic, ItemType.Controller));
                 }
             }
             return result;
@@ -410,9 +518,9 @@ namespace TemplateCodeGenerator.Logic.Generation
                     var defaultValue = (GenerateAllServiceContracts && GenerateAllServices && GetGenerateDefault(type)).ToString();
 
                     if (CanCreate(type)
-                        && QuerySetting<bool>(Common.ItemType.Service, type, StaticLiterals.Generate, defaultValue))
+                        && QuerySetting<bool>(ItemType.Service, type, StaticLiterals.Generate, defaultValue))
                     {
-                        result.Add(CreateServiceFromType(type, Common.UnitType.Logic, Common.ItemType.Service));
+                        result.Add(CreateServiceFromType(type, UnitType.Logic, ItemType.Service));
                     }
                 }
             }
@@ -464,9 +572,9 @@ namespace TemplateCodeGenerator.Logic.Generation
                     var defaultValue = (GenerateAllAccessContracts && GenerateAllControllers && GenerateAllFacades && GetGenerateDefault(type)).ToString();
 
                     if (CanCreate(type)
-                        && QuerySetting<bool>(Common.ItemType.Facade, type, StaticLiterals.Generate, defaultValue))
+                        && QuerySetting<bool>(ItemType.Facade, type, StaticLiterals.Generate, defaultValue))
                     {
-                        result.Add(CreateFacadeFromType(type, Common.UnitType.Logic, Common.ItemType.Facade));
+                        result.Add(CreateFacadeFromType(type, UnitType.Logic, ItemType.Facade));
                     }
                 }
             }
@@ -508,7 +616,7 @@ namespace TemplateCodeGenerator.Logic.Generation
 
             try
             {
-                result = (T)Convert.ChangeType(QueryGenerationSettingValue(Common.UnitType.Logic, itemType, CreateEntitiesSubTypeFromType(type), valueName, defaultValue), typeof(T));
+                result = (T)Convert.ChangeType(QueryGenerationSettingValue(UnitType.Logic, itemType, CreateEntitiesSubTypeFromType(type), valueName, defaultValue), typeof(T));
             }
             catch (Exception ex)
             {
@@ -523,7 +631,7 @@ namespace TemplateCodeGenerator.Logic.Generation
 
             try
             {
-                result = (T)Convert.ChangeType(QueryGenerationSettingValue(Common.UnitType.Logic, itemType, itemName, valueName, defaultValue), typeof(T));
+                result = (T)Convert.ChangeType(QueryGenerationSettingValue(UnitType.Logic, itemType, itemName, valueName, defaultValue), typeof(T));
             }
             catch (Exception ex)
             {

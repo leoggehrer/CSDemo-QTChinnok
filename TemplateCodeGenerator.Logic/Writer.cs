@@ -52,6 +52,17 @@ namespace TemplateCodeGenerator.Logic
                 var projectPath = Path.Combine(solutionPath, solutionProperties.LogicProjectName);
                 if (Directory.Exists(projectPath))
                 {
+                    var writeItems = generatedItems.Where<IGeneratedItem>((Func<IGeneratedItem, bool>)(e => e.UnitType == UnitType.Logic && e.ItemType == ItemType.ModelContract));
+
+                    Console.WriteLine("Write Logic-Models-Contracts...");
+                    WriteItems(projectPath, writeItems, WriteToGroupFile);
+                }
+            })));
+            tasks.Add(Task.Factory.StartNew((Action)(() =>
+            {
+                var projectPath = Path.Combine(solutionPath, solutionProperties.LogicProjectName);
+                if (Directory.Exists(projectPath))
+                {
                     var writeItems = generatedItems.Where<IGeneratedItem>((Func<IGeneratedItem, bool>)(e => e.UnitType == UnitType.Logic && (e.ItemType == ItemType.AccessContract || e.ItemType == ItemType.ServiceContract)));
 
                     Console.WriteLine("Write Logic-Contracts...");
